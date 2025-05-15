@@ -1,0 +1,17 @@
+# macOS specific files
+.DS_Store
+
+# Python specific files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+*-env/
+ENV/
+env/
+.venv/
+.pyenv/
+.Python
+
