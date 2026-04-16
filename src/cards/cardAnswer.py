@@ -16,6 +16,9 @@ class SimpleTextAnswer(CardAnswer):
         super().__init__(id)
         self.text = text
 
+    def getDisplayText(self):
+        return self.text
+
     def getDisplayTextWhenCorrect(self):
         return self.text
 
