@@ -8,3 +8,8 @@ Features:
 - Always has content to review
     - Even when Anki thinks you're done
     - Even when you're offline
+- Minimal interface
+    - Minimize gamelike dopamine hits
+    - Your screens looks productive to casual onlookers
+    - Doesn't take you out fo the terminal while you're waiting for AIs to work
+
