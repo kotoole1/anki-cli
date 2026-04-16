@@ -52,7 +52,7 @@ def _show_help(cardset_key: str):
 def run(args: list[str]):
     parser = argparse.ArgumentParser(add_help=False)
     parser.add_argument('cardset', type=str, nargs='?')
-    parser.add_argument('--top', type=int, default=500)
+    parser.add_argument('--top', type=int, default=100)
     parser.add_argument('--rebuild', action='store_true')
     parsed_args = parser.parse_args(args)
 
@@ -65,9 +65,9 @@ def run(args: list[str]):
     if parsed_args.cardset == "squares":
         cardset = SquareCardSet()
     elif parsed_args.cardset == "scrabble7":
-        cardset = ScrabbleCardSet(length=7, top_n=parsed_args.top, rebuild=rebuild)
+        cardset = ScrabbleCardSet(length=7, study_n=parsed_args.top, rebuild=rebuild)
     elif parsed_args.cardset == "scrabble8":
-        cardset = ScrabbleCardSet(length=8, top_n=parsed_args.top, rebuild=rebuild)
+        cardset = ScrabbleCardSet(length=8, study_n=parsed_args.top, rebuild=rebuild)
     else:
         print(f"unknown card set: '{parsed_args.cardset}'")
         return
