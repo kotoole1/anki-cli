@@ -17,7 +17,7 @@ import subprocess
 import pytest
 
 ROOT   = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PYTHON = os.path.join(ROOT, "anki-env", "bin", "python")
+PYTHON = os.path.join(ROOT, ".venv", "bin", "python")
 CLI    = os.path.join(ROOT, "src", "anki-cli.py")
 SRC    = os.path.join(ROOT, "src")
 
