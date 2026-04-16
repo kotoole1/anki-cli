@@ -7,6 +7,9 @@ class CardAnswer(ABC):
     @abstractmethod
     def getDisplayText(self):
         pass
+
+    def getWrongAnswerFeedback(self, submitted: str) -> str:
+        return submitted.upper()
     
 class SimpleTextAnswer(CardAnswer):
     def __init__(self, id: str, text: str):
