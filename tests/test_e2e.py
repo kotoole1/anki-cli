@@ -18,7 +18,7 @@ import pytest
 
 ROOT   = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PYTHON = os.path.join(ROOT, ".venv", "bin", "python")
-CLI    = os.path.join(ROOT, "src", "anki-cli.py")
+CLI    = os.path.join(ROOT, "anki-cli.py")
 SRC    = os.path.join(ROOT, "src")
 
 CACHE_7 = os.path.join(SRC, "scrabble", "cache", "nwl_7.csv")
@@ -37,7 +37,7 @@ def run_cli(args: list, inputs: list, timeout: int = 30):
         stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
-        cwd=SRC,
+        cwd=ROOT,
     )
     stdin_bytes = ("\n".join(inputs) + "\n").encode()
     try:
@@ -84,10 +84,11 @@ requires_cache_8 = pytest.mark.skipif(
 
 # ── CLI invocation ────────────────────────────────────────────────────────────
 
-def test_no_args_shows_controls():
+def test_no_args_shows_usage_with_example():
+    # stdin is a pipe (not a TTY), so the picker falls back to usage text.
     clean, _, _, rc = run_cli([], [])
     assert rc == 0
-    assert "CONTROLS" in clean
+    assert "uv run anki-cli.py scrabble7" in clean
 
 
 def test_unknown_cardset_exits_cleanly():
