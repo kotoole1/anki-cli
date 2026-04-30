@@ -19,3 +19,5 @@ env/
 
 src/scrabble/.cache.json
 /anki-docs/
+/tmp/
+/memory/
