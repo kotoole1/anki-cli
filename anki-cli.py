@@ -13,6 +13,7 @@ import termios
 from cards.cardSet import CardSet
 from squareCardSet import SquareCardSet
 from scrabble.ScrabbleCardSet import ScrabbleCardSet
+from oscars.OscarCardSet import OscarCardSet
 
 _CONTROLS_HELP = """\
 CONTROLS
@@ -23,6 +24,7 @@ CONTROLS
 """
 
 _CARDSET_OPTIONS = [
+    ("oscars",   "Oscar Best Picture winners by year"),
     ("scrabble7", "7-letter bingo alphagrams"),
     ("scrabble8", "8-letter bingo alphagrams"),
     ("squares",   "perfect squares"),
@@ -32,6 +34,7 @@ _CARDSET_HELP = {
     "squares":   "",
     "scrabble7": "Type any valid NWL word (upper- or lower-case).\n",
     "scrabble8": "Type any valid NWL word (upper- or lower-case).\n",
+    "oscars":    "Type the Best Picture title (fuzzy match accepted).\n",
 }
 
 _ENTER_ALT = "\033[?1049h"
@@ -119,7 +122,9 @@ def run(args: list[str]):
 
     rebuild = parsed_args.rebuild
 
-    if parsed_args.cardset == "squares":
+    if parsed_args.cardset == "oscars":
+        cardset = OscarCardSet()
+    elif parsed_args.cardset == "squares":
         cardset = SquareCardSet()
     elif parsed_args.cardset == "scrabble7":
         cardset = ScrabbleCardSet(length=7, study_n=parsed_args.top, rebuild=rebuild)
