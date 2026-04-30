@@ -164,7 +164,7 @@ def _study_loop(cardset: CardSet, cardset_key: str):
         elif user_input == "":
             answer_text = card.getAnswer().getDisplayTextWhenIncorrect()
         elif card.isCorrect(user_input):
-            answer_text = "Correct!\n" + card.getAnswer().getDisplayTextWhenCorrect()
+            answer_text = " ✔︎\n" + card.getAnswer().getDisplayTextWhenCorrect()
         else:
             feedback = card.getAnswer().getWrongAnswerFeedback(user_input)
             answer_text = feedback + "\n" + card.getAnswer().getDisplayTextWhenIncorrect()

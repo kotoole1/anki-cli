@@ -18,3 +18,4 @@ env/
 .Python
 
 src/scrabble/.cache.json
+/anki-docs/

@@ -1,5 +1,9 @@
 A command-line tool for memorizing text-based content, using a spaced repetition system.
 
+```
+uv run anki-cli.py scrabble7
+```
+
 Features:
 - Use content from your anki account, or interact purely with text files
 - Optionally, display productive-looking output in the terminal, above the interactive prompt
@@ -12,4 +16,3 @@ Features:
     - Minimize gamelike dopamine hits
     - Your screens looks productive to casual onlookers
     - Doesn't take you out fo the terminal while you're waiting for AIs to work
-
