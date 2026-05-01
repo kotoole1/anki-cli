@@ -2,9 +2,6 @@ import csv
 import os
 
 
-_DATA_PATH = os.path.join(os.path.dirname(__file__), "oscars", "data.csv")
-
-
 def _build_new_card_order(rows: list[dict]) -> list[str]:
     years = sorted({int(r["year"]) for r in rows}, reverse=True)
     max_year = years[0]

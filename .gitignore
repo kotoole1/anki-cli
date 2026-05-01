@@ -17,5 +17,12 @@ env/
 .pyenv/
 .Python
 
+# Generated
 src/scrabble/.cache.json
-/anki-docs/
+
+# Data for temporary agent reference
+anki-docs/
+tmp/
+
+# Agent use
+memory/
