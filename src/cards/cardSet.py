@@ -1,54 +1,28 @@
-import csv
-import os
+import random
+from cards.card import Card
 
 
-_DATA_PATH = os.path.join(os.path.dirname(__file__), "oscars", "data.csv")
+class CardSet:
+    """
+    A collection of cards learned as a group. An algorithm decides which cards
+    to show within the set.
+    """
+    # Anki deck option hints for a future export script.
+    # These reflect Anki's defaults and have NOT been tuned for any specific card set.
+    rating_time_threshold_s: int = 7
+    new_card_order: list = []
+    desired_retention: float = 0.9
+    new_cards_per_day: int = 5
+    learning_steps: list = ["1m", "10m"]
+    relearning_steps: list = ["10m"]
 
+    def __init__(self, id: str, name: str, cards: list[Card]):
+        self.id = id
+        self.name = name
+        self.cards = cards
 
-def _build_new_card_order(rows: list[dict]) -> list[str]:
-    years = sorted({int(r["year"]) for r in rows}, reverse=True)
-    max_year = years[0]
-    block_map: dict[int, list[int]] = {}
-    for year in years:
-        block_idx = (max_year - year) // 5
-        block_map.setdefault(block_idx, []).append(year)
+    def getNextCard(self) -> Card:
+        return random.choice(self.cards)
 
-    order = []
-    for block_idx in sorted(block_map):
-        block_years = sorted(block_map[block_idx], reverse=True)
-        for year in block_years:
-            order.append(f"{year}-desc")
-        for year in block_years:
-            order.append(f"{year}-actors")
-    return order
-
-
-class OscarCardSet(CardSet):
-    rating_time_threshold_s = 7
-
-    def __init__(self, start_year: int = 1928, end_year: int = 2026):
-        cards = []
-        rows = []
-        with open(_DATA_PATH, newline="", encoding="utf-8") as f:
-            for row in csv.DictReader(f):
-                year = int(row["year"])
-                if start_year <= year <= end_year:
-                    actors = [a.strip() for a in row["actors"].split("|") if a.strip()]
-                    cards.append(OscarCard(
-                        year=year,
-                        title=row["title"],
-                        actors=actors,
-                        description=row["description"],
-                    ))
-                    rows.append(row)
-
-        cards = []
-        for row in rows:
-            year = int(row["year"])
-            actors = [a.strip() for a in row["actors"].split("|") if a.strip()]
-            kwargs = dict(year=year, title=row["title"], actors=actors, description=row["description"])
-            cards.append(OscarCard(**kwargs, variant="desc"))
-            cards.append(OscarCard(**kwargs, variant="actors"))
-
-        super().__init__("oscars", "Oscar Best Pictures", cards)
-        self.new_card_order = _build_new_card_order(rows)
+    def anki_tags(self) -> list[str]:
+        return [f"anki-cli::threshold={self.rating_time_threshold_s}"]

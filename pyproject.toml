@@ -1,10 +1,21 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [project]
 name = "anki-cli"
 version = "0.1.0"
 requires-python = ">=3.13"
 dependencies = [
+    "fsrs",
     "wordfreq",
 ]
+
+[project.scripts]
+ankiCLI = "anki_cli:main"
+
+[tool.hatchling.build.targets.wheel]
+packages = ["anki_cli"]
 
 [dependency-groups]
 dev = [

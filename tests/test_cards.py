@@ -95,6 +95,6 @@ def test_feedback_uppercases_input():
 
 
 def test_feedback_multiple_excess_same_letter():
-    # EENTAIL has two E's; AEILNST only has one → second E is excess (red)
+    # EENTAIL has two E's; AEILNST has one → excess E is orange (letter is in alphagram)
     feedback = _ans().getWrongAnswerFeedback("EENTAIL")
-    assert "\033[91m" in feedback
+    assert "\033[38;5;208m" in feedback  # orange, not red

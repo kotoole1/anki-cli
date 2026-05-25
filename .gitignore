@@ -25,4 +25,4 @@ anki-docs/
 tmp/
 
 # Agent use
-memory/
+/memory/
