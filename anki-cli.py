@@ -226,13 +226,15 @@ def _show_help(cardset_key: str):
 
 
 def _build_help_epilog() -> str:
-    shortcut_for = {v: k for k, v in _SHORTCUTS.items()}
+    shortcut_for: dict[str, list[str]] = {}
+    for k, v in _SHORTCUTS.items():
+        shortcut_for.setdefault(v, []).append(k)
     name_w = max(len(n) for n, _ in _CARDSET_OPTIONS) + 2
     desc_w = max(len(d) for _, d in _CARDSET_OPTIONS) + 3
-    lines = ["card sets (shortcuts):"]
+    lines = [f"  {'card sets:':<{name_w}}{'':<{desc_w}}shortcut(s)"]
     for name, desc in _CARDSET_OPTIONS:
-        sc = shortcut_for.get(name, "")
-        lines.append(f"  {name:<{name_w}}{desc:<{desc_w}}{sc}")
+        sc = ", ".join(shortcut_for.get(name, []))
+        lines.append(f"  {_DIM}{name:<{name_w}}{desc:<{desc_w}}{sc}{_RESET}")
     return "\n".join(lines) + "\n"
 
 
