@@ -3,6 +3,7 @@ import os
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), 'src'))
 
 import json
+import re
 import subprocess
 import shutil
 import argparse
@@ -22,16 +23,53 @@ CONTROLS
   ctrl-c        Quit
 """
 
+# Shared by every scrabble set: all of them annotate answer words with the
+# ▶/▷ commonness indicator and the +#-~ extension symbols. Most also support the
+# tab/ctrl-o extension panel (the cloze set does not). Kept out of _CONTROLS_HELP
+# because these mean nothing for the non-scrabble sets (oscars, squares).
+_SCRABBLE_HELP = """\
+SYMBOLS (beside each answer word)
+  ▶ ▷ ▹    common / less common / rare word (top 20k / 50k / beyond)
+  +        one 1-letter extension on that side
+  #        several 1-letter extensions on that side
+  -        a 2-7 letter extension on that side (5+ letter words)
+  ~        2-7 letter extensions on both sides, no 1-letter ones
+"""
+
+# tab/ctrl-o panel — every scrabble set but the cloze set, which already lists
+# every extension on screen.
+_TAB_HELP = """\
+  tab      (or ctrl-o) reveal the full extension list for the words on screen
+"""
+
+# Menu/help table is sized for an 80-column terminal. Names fit _NAME_W and
+# descriptions fit _DESC_W (both ellipsized past those lengths); the stats that
+# follow start at a fixed column so the percentages line up, then run free and
+# are clipped at the right edge rather than wrapping. Keep descriptions <= _DESC_W.
+_NAME_W = 12
+_DESC_W = 30
+
 _CARDSET_OPTIONS = [
     ("oscars",        "Oscar Best Picture winners"),
-    ("scrabble7",     "7-letter bingos (1k, common words only)"),
-    ("scrabble7-1k",  "7-letter bingos (1k, any legal word)"),
-    ("scrabble8",     "8-letter bingos (1k, common words only)"),
-    ("scrabble8-1k",  "8-letter bingos (1k, any legal word)"),
+    ("scrabble7",     "7-letter bingos (1k, common)"),
+    ("scrabble7-1k",  "7-letter bingos (1k, any word)"),
+    ("scrabble8",     "8-letter bingos (1k, common)"),
+    ("scrabble8-1k",  "8-letter bingos (1k, any word)"),
     ("scrabble-2s",   "2-letter word extensions"),
+    ("scrabble-2s-legacy", "legacy: type all at once"),
     ("scrabble-2s+",  "3-letter extensions of 2s"),
+    ("scrabble-2s+-cloze", "3-letter ext of 2s (atomic cloze)"),
+    ("scrabble-2s+legacy", "legacy: type all at once"),
+    ("scrabble-hv",   "high-value tiles (QZJXKVW)"),
     ("squares",       "perfect squares"),
 ]
+
+# Every scrabble set shares the symbol legend; all but the cloze set also get
+# the tab/ctrl-o extension panel.
+_SCRABBLE_KEYS = frozenset(k for k, _ in _CARDSET_OPTIONS if k.startswith("scrabble"))
+# The cloze and batched sets already show every extension / segment, so their
+# tab/ctrl-o panel is deferred.
+_TAB_KEYS = _SCRABBLE_KEYS - {"scrabble-2s", "scrabble-2s+", "scrabble-2s+-cloze"}
 
 _CARDSET_HELP = {
     "squares":       "",
@@ -39,8 +77,12 @@ _CARDSET_HELP = {
     "scrabble7-1k":  "Type any valid NWL word (upper- or lower-case).\n",
     "scrabble8":     "Type any valid NWL word (upper- or lower-case).\n",
     "scrabble8-1k":  "Type any valid NWL word (upper- or lower-case).\n",
-    "scrabble-2s":   "Type all valid extending letters in any order (e.g. SHL or B).\n",
-    "scrabble-2s+":  "Type all valid extending letters in any order (e.g. SHL or B).\n",
+    "scrabble-2s":        "Type all valid extending letters within the shown group (or Enter if none).\n",
+    "scrabble-2s-legacy": "Type all valid extending letters in any order (e.g. SHL or B).\n",
+    "scrabble-2s+":       "Type all valid extending letters within the shown group (or Enter if none).\n",
+    "scrabble-2s+-cloze": "Type the single missing extension letter (others shown), or Enter if none.\n",
+    "scrabble-2s+legacy": "Type all valid extending letters in any order (e.g. SHL or B).\n",
+    "scrabble-hv":   "Type ALL valid NWL words for the rack, separated by spaces or commas.\n",
     "oscars":        "Type the Best Picture title. Glob shorthand: gl* matches Gladiator.\n",
 }
 
@@ -51,12 +93,16 @@ _CLEAR     = "\033[2J\033[H"
 _SHORTCUTS = {
     "o": "oscars",
     "s2":  "scrabble-2s",
+    "s2l": "scrabble-2s-legacy",
     "s3":  "scrabble-2s+",
     "s2+":  "scrabble-2s+",
+    "s2+c": "scrabble-2s+-cloze",
+    "s2+l": "scrabble-2s+legacy",
     "s7":  "scrabble7",
     "s8":  "scrabble8",
     "s7-1k": "scrabble7-1k",
     "s8-1k": "scrabble8-1k",
+    "shv": "scrabble-hv",
 }
 
 _RATINGS      = [Rating.Again, Rating.Hard, Rating.Good, Rating.Easy]
@@ -64,6 +110,18 @@ _RATING_NAMES = ["🆇 Again 🆇", "⌇ Hard ⌇ ", "✔︎ Good ✔︎ ", "⍟
 
 def _goto(row, col):
     return f"\033[{row};{col}H"
+
+_ANSI_RE = re.compile(r"\033\[[0-9;]*m")
+
+def _vis_len(text: str) -> int:
+    """Visible length of the first line, ignoring SGR color escapes."""
+    return len(_ANSI_RE.sub("", text.split("\n")[0]))
+
+def _fit(text: str, width: int) -> str:
+    """Left-justify text to exactly width columns, ellipsizing if it's too long."""
+    if len(text) > width:
+        return text[: width - 1] + "…"
+    return text.ljust(width)
 
 def _draw_hint(used_cols: int = 0) -> None:
     hint = "?=help"
@@ -111,6 +169,35 @@ def _load_menu_stats(key: str, memory_dir: str) -> dict | None:
         return None
 
 
+def _migrate_legacy_state(memory_dir: str) -> None:
+    """Idempotent id renames so review history follows a set when its id changes.
+
+    Each move fires only when the source file exists and the destination does
+    not, so re-runs (and fresh installs) are no-ops. Order matters for the 2s+
+    swap: the cloze set must vacate `scrabble-2s+.json` before the batched set
+    claims it.
+
+    Timeline:
+      * the original list-style 2s+  →  scrabble-2s+legacy
+      * the atomic cloze set (once `scrabble-2s+`)  →  scrabble-2s+-cloze
+      * the batched set (once `scrabble-2s+batched`)  →  the canonical scrabble-2s+
+      * the list-style 2s  →  scrabble-2s-legacy, freeing scrabble-2s for batched
+    """
+    def move(src_id: str, dst_id: str) -> None:
+        src = os.path.join(memory_dir, f"{src_id}.json")
+        dst = os.path.join(memory_dir, f"{dst_id}.json")
+        if os.path.exists(src) and not os.path.exists(dst):
+            try:
+                os.replace(src, dst)
+            except OSError:
+                pass
+
+    move("scrabble-2s+", "scrabble-2s+legacy")   # pre-existing (list-style → legacy)
+    move("scrabble-2s+", "scrabble-2s+-cloze")   # cloze vacates the canonical id …
+    move("scrabble-2s+batched", "scrabble-2s+")  # … so batched can claim it
+    move("scrabble-2s", "scrabble-2s-legacy")    # list-style 2s → legacy
+
+
 def _choose_cardset(stats: dict | None = None) -> str | None:
     """Arrow-key menu to pick a card set. Falls back to usage text if not a TTY."""
     if not sys.stdin.isatty():
@@ -129,6 +216,10 @@ def _choose_cardset(stats: dict | None = None) -> str | None:
         tty.setraw(fd)
         sys.stdout.write("\033[?25l")  # hide cursor
         sys.stdout.flush()
+        cols = shutil.get_terminal_size().columns
+        # _NAME_W is the 80-col baseline; widen if a set id (e.g. the legacy one)
+        # is longer so names never ellipsize into ambiguity.
+        name_w = max(_NAME_W, *(len(k) for k, _ in _CARDSET_OPTIONS))
         while True:
             sys.stdout.write(_CLEAR)
             _draw_hint()
@@ -145,7 +236,11 @@ def _choose_cardset(stats: dict | None = None) -> str | None:
                         f"  {s['relearning']}↺"
                         f"  {s['unseen']} new"
                     )
-                sys.stdout.write(_goto(2 + i, 3) + marker + key + "   " + desc + stats_str)
+                # Fixed-width name + desc columns keep the percentages aligned;
+                # clipping the whole line to the terminal width stops stats from
+                # wrapping onto the next row when a deck has outsized counts.
+                line = marker + _fit(key, name_w) + "  " + _fit(desc, _DESC_W) + stats_str
+                sys.stdout.write(_goto(2 + i, 3) + line[: cols - 2].rstrip())
             sys.stdout.flush()
 
             ch = sys.stdin.buffer.read(1)
@@ -216,8 +311,16 @@ def _show_extensions_panel(card) -> None:
 
 
 def _show_help(cardset_key: str):
+    sections = []
     extra = _CARDSET_HELP.get(cardset_key, "")
-    text = (extra + "\n" + _CONTROLS_HELP) if extra else _CONTROLS_HELP
+    if extra:
+        sections.append(extra.rstrip("\n"))
+    if cardset_key in _SCRABBLE_KEYS:
+        sections.append(_SCRABBLE_HELP.rstrip("\n"))
+        if cardset_key in _TAB_KEYS:
+            sections.append(_TAB_HELP.rstrip("\n"))
+    sections.append(_CONTROLS_HELP.rstrip("\n"))
+    text = "\n\n".join(sections) + "\n"
     try:
         proc = subprocess.Popen(["more"], stdin=subprocess.PIPE)
         proc.communicate(input=text.encode())
@@ -250,7 +353,8 @@ def run(args: list[str]):
     if parsed_args.cardset:
         parsed_args.cardset = _SHORTCUTS.get(parsed_args.cardset, parsed_args.cardset)
 
-    memory_dir = parsed_args.memory_dir or os.path.expanduser("~/.local/share/anki-cli")
+    memory_dir = parsed_args.memory_dir or os.path.expanduser("~/.local/share/anki-cli") # TODOK: portable way to have this configurable once-ish per user, without hardcoded paths or an argument every call. Or move somewhere we can guarantee access to on each OS.
+    _migrate_legacy_state(memory_dir)
     scheduler = None
 
     if not parsed_args.cardset:
@@ -276,6 +380,13 @@ def run(args: list[str]):
         cardset = ScrabbleCardSet(length=length, top_n=1000, common_filter=common_filter)
         store = AcReviewStore(memory_dir)
         scheduler = AcScheduler(cardset, store)
+    elif parsed_args.cardset == "scrabble-hv":
+        from scrabble.HighValueCardSet import AcHighValueCardSet
+        from memory.AcReviewStore import AcReviewStore
+        from memory.AcScheduler import AcScheduler
+        cardset = AcHighValueCardSet()
+        store = AcReviewStore(memory_dir)
+        scheduler = AcScheduler(cardset, store)
     elif parsed_args.cardset == "oscars":
         from oscars.OscarCardSet import OscarCardSet
         from memory.AcReviewStore import AcReviewStore
@@ -283,14 +394,23 @@ def run(args: list[str]):
         cardset = OscarCardSet()
         store = AcReviewStore(memory_dir)
         scheduler = AcScheduler(cardset, store)
-    elif parsed_args.cardset in ("scrabble-2s", "scrabble-2s+"):
-        from scrabble.ExtensionCardSet import AcExtensionCardSet
+    elif parsed_args.cardset in ("scrabble-2s", "scrabble-2s-legacy", "scrabble-2s+",
+                                 "scrabble-2s+-cloze", "scrabble-2s+legacy"):
+        from scrabble.ExtensionCardSet import (
+            AcExtensionCardSet, AcClozeExtensionCardSet, AcBatchedExtensionCardSet,
+        )
         from memory.AcReviewStore import AcReviewStore
         from memory.AcScheduler import AcScheduler
         if parsed_args.cardset == "scrabble-2s":
+            cardset = AcBatchedExtensionCardSet.scrabble_2s()
+        elif parsed_args.cardset == "scrabble-2s-legacy":
             cardset = AcExtensionCardSet.scrabble_2s()
-        else:
+        elif parsed_args.cardset == "scrabble-2s+-cloze":
+            cardset = AcClozeExtensionCardSet.scrabble_2s_plus()
+        elif parsed_args.cardset == "scrabble-2s+legacy":
             cardset = AcExtensionCardSet.scrabble_2s_plus()
+        else:  # scrabble-2s+ (canonical, batched)
+            cardset = AcBatchedExtensionCardSet.scrabble_2s_plus()
         store = AcReviewStore(memory_dir)
         scheduler = AcScheduler(cardset, store)
     else:
@@ -310,42 +430,107 @@ def startStudy(cardset: CardSet, cardset_key: str, scheduler=None):
         sys.stdout.flush()
 
 
+def _paint_cloze_question(card, scheduler, clue, feedback=None) -> None:
+    """Repaint a cloze question: clue+alphabet on top, the input line, then the
+    given-extension context below it; cursor left on the input line."""
+    sys.stdout.write(_CLEAR)
+    _draw_hint(_vis_len(clue))
+    _draw_status_bar(scheduler)
+    sys.stdout.write(_goto(1, 1))
+    sys.stdout.write(clue + "\n")          # row 1: clue + alphabet
+    sys.stdout.write("\n")                 # row 2: the "> " input line
+    context = card.live_context()
+    if context:
+        sys.stdout.write(context + "\n")   # row 3+: other valid extensions (given)
+    if feedback:
+        sys.stdout.write("\n" + feedback + "\n")
+    sys.stdout.write(_goto(2, 1))
+    sys.stdout.flush()
+
+
+def _paint_answer(scheduler, clue, guess, idx, rack_stat, answer_text) -> None:
+    """Repaint the post-submit screen pinned to the top (no scroll, so the clue
+    line never disappears): clue, the submitted guess, the rating selector, then
+    the full answer list."""
+    left  = "← " if idx > 0               else "  "
+    right = " →" if idx < len(_RATINGS) - 1 else "  "
+    sys.stdout.write(_CLEAR)
+    _draw_status_bar(scheduler)
+    sys.stdout.write(_goto(1, 1))
+    sys.stdout.write(clue.replace("\n", "\r\n") + "\r\n")
+    sys.stdout.write(f"> {guess}\r\n")
+    sys.stdout.write(f"{left}{_RATING_NAMES[idx]}{right}{rack_stat}   \r\n")
+    sys.stdout.write(answer_text.replace("\n", "\r\n") + "\r\n")
+    sys.stdout.flush()
+
+
 def _study_loop(cardset: CardSet, cardset_key: str, scheduler=None):
     while True:
         card = scheduler.getNextCard() if scheduler else cardset.getNextCard()
-        prompt_text = card.getPrompt().getDisplayText()
+        answer = card.getAnswer()
+        # Cloze cards expose clue_text/live_context; everything else uses the
+        # plain prompt and the original single-line layout.
+        is_cloze = hasattr(card, "clue_text")
+        clue = card.clue_text() if is_cloze else card.getPrompt().getDisplayText()
 
-        sys.stdout.write(_CLEAR)
-        _draw_hint(len(prompt_text.split('\n')[0]))
-        _draw_status_bar(scheduler)
-        sys.stdout.write(_goto(1, 1))
-        sys.stdout.flush()
+        t0 = time.time()
+        show_help = False
 
-        print(prompt_text)
+        if is_cloze:
+            feedback = None
+            while True:
+                _paint_cloze_question(card, scheduler, clue, feedback)
+                try:
+                    user_input = input("> ").strip()
+                except (KeyboardInterrupt, EOFError):
+                    return
+                if user_input == "?":
+                    show_help = True
+                    break
+                if user_input == "" or answer.isValid(user_input):
+                    break
+                feedback = answer.getInvalidFeedback(user_input)
+        else:
+            sys.stdout.write(_CLEAR)
+            _draw_hint(len(clue.split("\n")[0]))
+            _draw_status_bar(scheduler)
+            sys.stdout.write(_goto(1, 1))
+            sys.stdout.flush()
+            print(clue)
+            while True:
+                try:
+                    user_input = input("> ").strip()
+                except (KeyboardInterrupt, EOFError):
+                    return
+                if user_input == "?":
+                    show_help = True
+                    break
+                # Empty (whitespace-only collapses to "") is always a wrong answer —
+                # the simple "idk". Otherwise reject submissions the card deems
+                # invalid (e.g. not an anagram of the rack): show a single feedback
+                # line and re-prompt without scoring, like pre-submission typing.
+                if user_input == "" or answer.isValid(user_input):
+                    break
+                print(answer.getInvalidFeedback(user_input))
 
-        try:
-            t0 = time.time()
-            user_input = input("> ").strip()
-            elapsed = time.time() - t0
-        except (KeyboardInterrupt, EOFError):
-            return
-
-        if user_input == "?":
+        if show_help:
             _show_help(cardset_key)
             continue
 
+        elapsed = time.time() - t0
         used_glob = user_input.endswith("*")
 
         if card.isCorrect(user_input):
             is_correct = True
-            answer_text = card.getAnswer().getDisplayTextWhenCorrect()
-        elif user_input == "":
+            answer_text = answer.getDisplayTextWhenCorrect()
+        elif user_input == "" and not getattr(answer, "diff_on_blank", False):
             is_correct = False
-            answer_text = card.getAnswer().getDisplayTextWhenIncorrect()
+            answer_text = answer.getDisplayTextWhenIncorrect()
         else:
             is_correct = False
-            feedback = card.getAnswer().getWrongAnswerFeedback(user_input)
-            answer_text = feedback + "\n" + card.getAnswer().getDisplayTextWhenIncorrect()
+            feedback = answer.getWrongAnswerFeedback(user_input)
+            body = answer.getDisplayTextWhenIncorrect()
+            answer_text = f"{feedback}\n{body}" if feedback else body
 
         if scheduler and is_correct:
             auto_rating = scheduler.inferRating(elapsed, used_glob, card)
@@ -354,16 +539,22 @@ def _study_loop(cardset: CardSet, cardset_key: str, scheduler=None):
         else:
             auto_rating = Rating.Good
 
+        # Post-submit the clue recolors: the answer letter goes green, a
+        # wrong-but-plausible guess goes red (cloze only).
+        clue_revealed = card.clue_text(user_input, revealed=True) if is_cloze else clue
+
         try:
             idx = _RATINGS.index(auto_rating)
 
-            prob = getattr(card, 'probability', None)
+            prob = getattr(card, "probability", None)
             rack_stat = f"   {prob * 1e6:.1f}/M" if prob is not None else ""
 
             if not sys.stdin.isatty():
                 input("")
                 left  = "← " if idx > 0               else "  "
                 right = " →" if idx < len(_RATINGS) - 1 else "  "
+                if is_cloze:
+                    print(clue_revealed)
                 sys.stdout.write(f"{left}{_RATING_NAMES[idx]}{right}{rack_stat}\n")
                 sys.stdout.flush()
                 print(answer_text)
@@ -371,34 +562,21 @@ def _study_loop(cardset: CardSet, cardset_key: str, scheduler=None):
             else:
                 fd = sys.stdin.fileno()
                 old = termios.tcgetattr(fd)
-
                 try:
                     tty.setraw(fd)
                     sys.stdout.write("\033[?25l")  # hide cursor
-                    left  = "← " if idx > 0               else "  "
-                    right = " →" if idx < len(_RATINGS) - 1 else "  "
-                    sys.stdout.write(f"{left}{_RATING_NAMES[idx]}{right}{rack_stat}   \r\n")
-                    sys.stdout.write(answer_text.replace("\n", "\r\n") + "\r\n")
-                    sys.stdout.flush()
-
-                    n_up   = len(answer_text.splitlines()) + 1
-                    at_top = False  # True after ctrl-o clears screen (content at line 1)
-
+                    _paint_answer(scheduler, clue_revealed, user_input, idx, rack_stat, answer_text)
                     while True:
                         ch = sys.stdin.buffer.read(1)
                         if ch in (b'\x03', b'\x04'):
                             raise KeyboardInterrupt
                         if ch in (b'\r', b'\n'):
                             break
-                        if ch == b'\x0f':  # ctrl-o
+                        # ctrl-o extension panel: every scrabble set but the cloze one.
+                        # TODOCC: add an answer-safe (post-submit) extension panel for cloze.
+                        if ch in (b'\x0f', b'\t') and not is_cloze:
                             _show_extensions_panel(card)
-                            sys.stdout.write(_CLEAR + _goto(1, 1))
-                            _draw_status_bar(scheduler)
-                            sys.stdout.write(f"{left}{_RATING_NAMES[idx]}{right}{rack_stat}   \r\n")
-                            sys.stdout.write(answer_text.replace("\n", "\r\n") + "\r\n")
-                            sys.stdout.write(_goto(1, 1))  # keep cursor at top; prevents scroll
-                            sys.stdout.flush()
-                            at_top = True
+                            _paint_answer(scheduler, clue_revealed, user_input, idx, rack_stat, answer_text)
                             continue
                         if ch == b'\x1b':
                             seq = sys.stdin.buffer.read(2)
@@ -406,16 +584,7 @@ def _study_loop(cardset: CardSet, cardset_key: str, scheduler=None):
                                 idx = max(0, idx - 1)
                             elif seq == b'[C':
                                 idx = min(len(_RATINGS) - 1, idx + 1)
-                        left  = "← " if idx > 0               else "  "
-                        right = " →" if idx < len(_RATINGS) - 1 else "  "
-                        if at_top:
-                            sys.stdout.write(_goto(1, 1))
-                            sys.stdout.write(f"{left}{_RATING_NAMES[idx]}{right}{rack_stat}   ")
-                        else:
-                            sys.stdout.write(f"\033[{n_up}A\r")
-                            sys.stdout.write(f"{left}{_RATING_NAMES[idx]}{right}{rack_stat}   ")
-                            sys.stdout.write(f"\033[{n_up}B")
-                        sys.stdout.flush()
+                            _paint_answer(scheduler, clue_revealed, user_input, idx, rack_stat, answer_text)
                 finally:
                     sys.stdout.write("\033[?25h")  # restore cursor
                     sys.stdout.flush()

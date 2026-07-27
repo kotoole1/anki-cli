@@ -1,4 +1,8 @@
-src/scrabble/cache/
+# Word caches are downloaded/rebuilt at runtime and not tracked — except the
+# curated two-letter playability dataset, which is static (see its .md).
+src/scrabble/cache/*
+!src/scrabble/cache/two_letter_playability.tsv
+!src/scrabble/cache/two_letter_playability.md
 
 # macOS specific files
 .DS_Store

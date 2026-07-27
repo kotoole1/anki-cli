@@ -220,10 +220,23 @@ def test_frequency_indicator_common_word_gets_filled_triangle(cs7_2k):
     assert "▶" in card.getAnswer().getDisplayText()
 
 
-def test_frequency_indicator_uncommon_word_gets_outline_triangle(cs7_2k):
-    """ANTSIER has zero wordfreq and should get ▷."""
+def test_frequency_indicator_rare_word_gets_small_triangle(cs7_2k):
+    """ANTSIER has zero wordfreq (beyond the top 50k) and should get ▹."""
     card = next(c for c in cs7_2k.cards if c.id == "AEINRST")
-    assert "▷" in card.getAnswer().getDisplayText()
+    text = _strip_ansi(card.getAnswer().getDisplayText())
+    antsier_line = next(l for l in text.splitlines() if "ANTSIER" in l)
+    assert "▹" in antsier_line
+    assert "▶" not in antsier_line and "▷" not in antsier_line
+
+
+def test_frequency_indicator_three_tiers():
+    """The shared indicator marks top-20k ▶, top-50k ▷, and rarer words ▹."""
+    from scrabble.ScrabbleCard import _commonness_indicator
+    top20k = frozenset({"cat"})
+    top50k = frozenset({"cat", "dog"})  # top20k ⊆ top50k, as wordfreq guarantees
+    assert _commonness_indicator("CAT", top20k, top50k) == "▶"
+    assert _commonness_indicator("DOG", top20k, top50k) == "▷"
+    assert _commonness_indicator("ZZZ", top20k, top50k) == "▹"
 
 
 def test_frequency_indicator_every_word_has_one(cs7):
@@ -233,7 +246,7 @@ def test_frequency_indicator_every_word_has_one(cs7):
         for line in text.splitlines():
             if not line.strip():
                 continue
-            assert line.count("▶") + line.count("▷") == 1, \
+            assert line.count("▶") + line.count("▷") + line.count("▹") == 1, \
                 f"Expected exactly one indicator in: {line!r}"
 
 
@@ -264,6 +277,7 @@ def test_extension_no_spurious_symbols_without_cache(cs7):
                         nwl_words=[("TEST", "a test")], top20k=frozenset(), ext_lookup=None)
     text = card.getAnswer().getDisplayText()
     assert "+" not in text
+    assert "#" not in text
     assert "-" not in text
     assert "~" not in text
 
@@ -278,6 +292,47 @@ def test_extension_symbols_present_for_spot_check(cs7):
             if sym in text:
                 symbols_found.add(sym)
     assert "+" in symbols_found, "Expected at least one '+' extension in first 50 cards"
+
+
+# ── '#' symbol: more than one 1-letter extension ─────────────────────────────
+
+def test_extension_symbol_plus_for_exactly_one_extension():
+    """A single 1-letter extension on a side yields '+'."""
+    from scrabble.extensions import AcExtensionLookup
+    lookup = AcExtensionLookup(frozenset({"AT", "BAT", "ATE"}))
+    left, right = lookup.symbols("AT")
+    assert left == "+"   # only BAT extends AT on the left
+    assert right == "+"  # only ATE extends AT on the right
+
+
+def test_extension_symbol_hash_for_multiple_extensions():
+    """More than one 1-letter extension on a side yields '#', used like '+'."""
+    from scrabble.extensions import AcExtensionLookup
+    lookup = AcExtensionLookup(frozenset({"AT", "BAT", "CAT", "ATE"}))
+    left, right = lookup.symbols("AT")
+    assert left == "#"   # BAT and CAT → more than one left extension
+    assert right == "+"  # only ATE on the right
+
+
+def test_extension_symbol_empty_when_no_extension():
+    """No 1-letter extension on a side yields ''."""
+    from scrabble.extensions import AcExtensionLookup
+    lookup = AcExtensionLookup(frozenset({"AT", "BAT"}))
+    left, right = lookup.symbols("AT")
+    assert left == "+"
+    assert right == ""
+
+
+def test_extension_symbol_hash_renders_bright_like_plus():
+    """In a card answer, '#' is shown bright (not dimmed), exactly like '+'."""
+    from scrabble.ScrabbleCard import ScrabbleAnswer, _DIM
+    from scrabble.extensions import AcExtensionLookup
+    # AT has two left extensions (BAT, CAT) → '#AT'; the '#' must not be dimmed.
+    lookup = AcExtensionLookup(frozenset({"AT", "BAT", "CAT"}))
+    ans = ScrabbleAnswer("AT", [("AT", "")], frozenset(), lookup)
+    line = ans.getDisplayText()
+    assert "#" in line
+    assert f"{_DIM}#" not in line
 
 
 @requires_words_cache
@@ -333,7 +388,7 @@ def test_words_ordered_by_frequency_descending(cs7_2k):
         stripped = line.strip()
         if stripped:
             # strip extension symbols: leading +/-/~ and trailing +/-/~
-            word = stripped.lstrip("+-~ ").split()[0].rstrip("+-~ ")
+            word = stripped.lstrip("+#-~ ").split()[0].rstrip("+#-~ ")
             if word.isalpha():
                 words.append(word)
     freqs = [word_frequency(w.lower(), 'en') for w in words]
@@ -394,3 +449,105 @@ def test_wrong_answer_missing_shown_in_purple():
     feedback = ans.getWrongAnswerFeedback("XEINRST")  # missing A, extra X
     assert _PURPLE in feedback
     assert "A" in feedback  # the missing letter is shown
+
+
+# ── Submission validity (reject non-anagrams) ────────────────────────────────
+
+def test_is_valid_true_for_anagram():
+    """Any rearrangement of the exact rack tiles is a valid submission."""
+    ans = _make_answer("AEINRST")
+    assert ans.isValid("nastier")
+    assert ans.isValid("RETINAS")
+
+
+def test_is_valid_false_for_non_anagram():
+    """Wrong, extra, or missing tiles make a submission invalid (rejected)."""
+    ans = _make_answer("AEINRST")
+    assert not ans.isValid("XEINRST")   # X not in rack
+    assert not ans.isValid("AEINRS")    # missing a tile
+    assert not ans.isValid("AEINRSTT")  # extra tile
+
+
+def test_is_valid_false_for_empty():
+    """Empty input is not a valid anagram (the loop scores it as wrong, not reject)."""
+    ans = _make_answer("AEINRST")
+    assert not ans.isValid("")
+
+
+def test_is_valid_tolerates_spaces_between_anagrams():
+    """Universal: several space/comma-separated anagrams are valid, not blocked."""
+    ans = _make_answer("AEINRST")
+    assert ans.isValid("nastier retinas")
+    assert ans.isValid("NASTIER, RETINAS")
+
+
+def test_is_valid_blocks_when_any_token_is_not_an_anagram():
+    """A non-anagram token makes the whole submission invalid (rejected)."""
+    ans = _make_answer("AEINRST")
+    assert not ans.isValid("nastier xxxxxxx")
+
+
+def test_all_anagram_is_valid_requires_each_token_anagram():
+    """High-value 'all anagrams' answer: each token must be an anagram of the rack."""
+    from scrabble.HighValueCardSet import AcAllAnagramAnswer
+    ans = AcAllAnagramAnswer("NOW", [("NOW", ""), ("OWN", ""), ("WON", "")],
+                             frozenset(), None)
+    assert ans.isValid("now own won")     # all anagrams → valid (and correct)
+    assert ans.isValid("now")             # valid submission, just not yet correct
+    assert not ans.isValid("now xyz")     # xyz is not an anagram → rejected
+    assert not ans.isValid("")            # empty → not valid
+
+
+# ── High-value multi-word wrong-answer feedback (per token, colored) ──────────
+
+_GREEN_HV = "\033[92m"
+_ANSI_HV = re.compile(r"\033\[[0-9;]*m")
+
+
+def _hv_answer(alphagram, words):
+    from scrabble.HighValueCardSet import AcAllAnagramAnswer
+    return AcAllAnagramAnswer(alphagram, [(w, "") for w in words], frozenset(), None)
+
+
+def _strip_hv(text):
+    return _ANSI_HV.sub("", text)
+
+
+def test_hv_feedback_single_valid_word_greens_word_reds_nonword():
+    """Regression: rack ESX has one valid word (SEX); submitting 'sex xes' must
+    green SEX and red XES per token, NOT fall back to the single-word tile diff
+    (which colored the whole 'SEX XES' string as one mis-tiled word)."""
+    ans = _hv_answer("ESX", ["SEX"])
+    fb = ans.getWrongAnswerFeedback("sex xes")
+    assert f"{_GREEN_HV}SEX\033[0m" in fb     # correct word → green
+    assert f"{_RED}XES\033[0m" in fb          # valid anagram, not a word → red
+    assert _ORANGE not in fb                  # never the per-letter tile diff
+    assert _strip_hv(fb).split() == ["SEX", "XES"]   # no garbled letters/spaces
+
+
+def test_hv_feedback_multi_valid_partial_greens_missing_purple():
+    """Rack NOW (NOW/OWN/WON): giving NOW + a non-word anagram greens NOW, reds
+    the non-word, and lists the missed words in purple."""
+    ans = _hv_answer("NOW", ["NOW", "OWN", "WON"])
+    fb = ans.getWrongAnswerFeedback("now nwo")
+    assert f"{_GREEN_HV}NOW\033[0m" in fb
+    assert f"{_RED}NWO\033[0m" in fb
+    assert _PURPLE in fb                       # missing words shown
+    stripped = _strip_hv(fb)
+    assert "OWN" in stripped and "WON" in stripped   # both missed words listed
+
+
+def test_hv_feedback_dedups_repeated_token():
+    ans = _hv_answer("NOW", ["NOW", "OWN", "WON"])
+    fb = _strip_hv(ans.getWrongAnswerFeedback("now now"))
+    assert fb.count("NOW") == 1                # repeated token shown once
+
+
+def test_hv_feedback_all_correct_but_out_of_order_has_no_missing():
+    """If every valid word is present (correctness is order-independent), the
+    feedback greens them all with no purple 'missing' tail."""
+    ans = _hv_answer("NOW", ["NOW", "OWN", "WON"])
+    fb = ans.getWrongAnswerFeedback("won now own")
+    assert _PURPLE not in fb                    # nothing missing
+    assert _RED not in fb                       # every token is a valid word
+    assert fb.count(_GREEN_HV) == 3

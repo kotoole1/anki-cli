@@ -9,6 +9,12 @@ from scrabble.ExtensionCardSet import AcExtensionCardSet
 _RED    = "\033[91m"
 _PURPLE = "\033[95m"
 
+_ANSI = re.compile(r"\033(?:\[[^\x40-\x7e]*[\x40-\x7e]|\?[0-9]+[hl])")
+
+
+def _strip_ansi(text: str) -> str:
+    return _ANSI.sub("", text)
+
 # ── Fixtures ──────────────────────────────────────────────────────────────────
 
 @pytest.fixture(scope="module")
@@ -171,7 +177,9 @@ def test_2s_isCorrect_all_letters(cs_2s):
 
 
 def test_2s_set_id(cs_2s):
-    assert cs_2s.id == "scrabble-2s"
+    # scrabble_2s() now builds the legacy list-style set; the new batched set
+    # owns the canonical "scrabble-2s" id (see AcBatchedExtensionCardSet).
+    assert cs_2s.id == "scrabble-2s-legacy"
 
 
 def test_2s_display_shows_letters_and_words(cs_2s):
@@ -179,6 +187,43 @@ def test_2s_display_shows_letters_and_words(cs_2s):
     text = card.getAnswer().getDisplayText()
     assert "H" in text  # AH extends A on the right
     assert "AH" in text  # full word shown
+
+
+# ── Shared annotations: ▶/▷ indicator and bright +/# (unified with anagram sets) ─
+
+def test_2s_every_word_line_has_one_frequency_indicator(cs_2s):
+    """Each word line carries exactly one ▶/▷/▹, matching the anagram sets."""
+    for card in cs_2s.cards:
+        ans = card.getAnswer()
+        if not ans._valid_letters:
+            continue
+        text = _strip_ansi(ans.getDisplayText())
+        # First line lists the valid letters; remaining lines are words.
+        for line in text.splitlines()[1:]:
+            if not line.strip():
+                continue
+            assert line.count("▶") + line.count("▷") + line.count("▹") == 1, \
+                f"Expected exactly one indicator in: {line!r}"
+
+
+def test_2s_common_word_gets_filled_triangle(cs_2s):
+    """A common 2-letter word (ON) gets the ▶ indicator."""
+    card = next(c for c in cs_2s.cards if c.id == "2s-O-right")
+    text = _strip_ansi(card.getAnswer().getDisplayText())
+    assert "▶" in text
+
+
+def test_2s_extension_symbols_stay_dim():
+    """Unlike the anagram sets, extension-set +/# stay dim — the word itself is
+    the recall signal and there are many more words on screen."""
+    from scrabble.ExtensionCard import _DIM
+    from scrabble.extensions import AcExtensionLookup
+    # AT has two left extensions (BAT, CAT) → '#AT'; the '#' must be dimmed.
+    lookup = AcExtensionLookup(frozenset({"AT", "BAT", "CAT"}))
+    ans = ExtensionAnswer("test-A-right", frozenset("T"), [("AT", "")], lookup)
+    line = ans.getDisplayText()
+    assert "#" in line
+    assert f"{_DIM}#" in line
 
 
 # ── scrabble-2s+ card set ─────────────────────────────────────────────────────
@@ -237,4 +282,6 @@ def test_2s_plus_aa_right_extensions(cs_2s_plus):
 
 
 def test_2s_plus_set_id(cs_2s_plus):
-    assert cs_2s_plus.id == "scrabble-2s+"
+    # scrabble_2s_plus() now builds the legacy list-style set; the new cloze set
+    # owns the canonical "scrabble-2s+" id (see AcClozeExtensionCardSet).
+    assert cs_2s_plus.id == "scrabble-2s+legacy"

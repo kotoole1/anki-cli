@@ -1,11 +1,12 @@
 """Extension lookup for NWL words.
 
 Provides per-word extension symbols for display in scrabble card answers:
-  +  at least one valid 1-letter NWL extension on that side
+  +  exactly one valid 1-letter NWL extension on that side
+  #  more than one valid 1-letter NWL extension on that side (used like +)
   -  at least one valid 2-7 letter extension on that side (5+ letter words only)
   ~  2-7 letter extensions on both sides, neither has a 1-letter extension
 
-Symbol priority: + overrides -, ~ replaces -- when both sides qualify for -.
+Symbol priority: + / # override -, ~ replaces -- when both sides qualify for -.
 """
 
 import os
@@ -13,7 +14,35 @@ import string
 
 _WORDS_CACHE = os.path.join(os.path.dirname(__file__), "cache", "nwl_words.txt")
 _DEFS_CACHE  = os.path.join(os.path.dirname(__file__), "cache", "nwl_defs.txt")
+_PLAYABILITY_CACHE = os.path.join(os.path.dirname(__file__), "cache", "two_letter_playability.tsv")
 _LETTERS = string.ascii_uppercase
+
+
+def load_two_letter_playability() -> dict[str, int]:
+    """Load the two-letter-word 'playability' (real scrabble play frequency).
+
+    Word → play count from John O'Laughlin's Quackle self-play run; higher means
+    played more often. Used to order the drip-feed of the 2s+ set by how commonly
+    each root is actually played. Returns an empty dict if the cache is missing;
+    words absent from the data (the NWL2020 additions EW/OK) are simply not keys.
+
+    CAVEAT — Collins-derived, not NWL. The source is O'Laughlin's *Collins* run
+    (his North-American `twl-*` twos files predate 2006, so lack QI/ZA/etc.). It
+    is filtered to NWL 2-letter words and QI still ranks #1, so the ordering is a
+    faithful NWL proxy — but if a true NWL 2-letter play-frequency table becomes
+    available, replace `cache/two_letter_playability.tsv` (same format) and this
+    loader is unchanged. Full provenance + replacement notes:
+    cache/two_letter_playability.md."""
+    if not os.path.exists(_PLAYABILITY_CACHE):
+        return {}
+    play: dict[str, int] = {}
+    with open(_PLAYABILITY_CACHE) as f:
+        for line in f:
+            if line.startswith("#") or "\t" not in line:
+                continue
+            word, value = line.rstrip("\n").split("\t", 1)
+            play[word.strip().upper()] = int(value)
+    return play
 
 
 def load_nwl_set() -> frozenset[str]:
@@ -63,12 +92,13 @@ class AcExtensionLookup:
     def symbols(self, word: str) -> tuple[str, str]:
         """Return (left_sym, right_sym) for the extension annotation of `word`.
 
-        left_sym/right_sym each ∈ {"", "+", "-", "~"}.
+        left_sym/right_sym each ∈ {"", "+", "#", "-", "~"}. "#" is "+" for more
+        than one valid 1-letter extension on that side.
         """
-        left_single = any(c + word in self._nwl for c in _LETTERS)
-        right_single = any(word + c in self._nwl for c in _LETTERS)
-        left_sym = "+" if left_single else ""
-        right_sym = "+" if right_single else ""
+        left_count = sum(1 for c in _LETTERS if c + word in self._nwl)
+        right_count = sum(1 for c in _LETTERS if word + c in self._nwl)
+        left_sym = "#" if left_count > 1 else "+" if left_count == 1 else ""
+        right_sym = "#" if right_count > 1 else "+" if right_count == 1 else ""
 
         if len(word) >= 5:
             if not left_sym and word in self._left_multi:

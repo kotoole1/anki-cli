@@ -16,6 +16,7 @@ import csv
 import json
 import os
 import re
+import string
 import subprocess
 
 import pytest
@@ -111,6 +112,40 @@ def _first_scrabble_word(cache_path: str, top_n: int = 1000, common_filter: bool
     return sorted(pool[:top_n][0]["words"])[0]
 
 
+def _first_scrabble_nonword(cache_path: str, top_n: int = 1000, common_filter: bool = True) -> str:
+    """An anagram of the highest-prob card's rack that is NOT a valid word.
+
+    This is a *valid* submission (right tiles) that should still score as a wrong
+    answer — distinct from a non-anagram, which is rejected without scoring.
+    """
+    import itertools
+
+    entries: dict[str, dict] = {}
+    with open(cache_path, newline="") as f:
+        for row in csv.DictReader(f):
+            alpha = row["alphagram"]
+            if alpha not in entries:
+                entries[alpha] = {"alpha": alpha, "prob": float(row["prob"]),
+                                  "commonness": float(row["commonness"]), "words": []}
+            entries[alpha]["words"].append(row["word"])
+
+    if common_filter:
+        from wordfreq import top_n_list
+        top20k = set(top_n_list('en', 20000))
+        pool = [e for e in entries.values() if any(w.lower() in top20k for w in e["words"])]
+    else:
+        pool = list(entries.values())
+
+    pool.sort(key=lambda e: e["prob"], reverse=True)
+    first = pool[:top_n][0]
+    valid = {w.upper() for w in first["words"]}
+    for perm in itertools.permutations(first["alpha"]):
+        cand = "".join(perm)
+        if cand not in valid:
+            return cand
+    return first["alpha"]  # unreachable: a rack has far fewer words than permutations
+
+
 # ── CLI invocation ────────────────────────────────────────────────────────────
 
 def test_no_args_shows_usage_with_example():
@@ -145,6 +180,9 @@ def test_squares_help_during_session():
     clean, _, err, rc = run_cli(["squares"], ["?", "", ""])
     assert rc == 0
     assert "CONTROLS" in clean
+    # The scrabble symbol/tab legend is scrabble-only — squares must not show it.
+    assert "▶" not in clean
+    assert "tab" not in clean
 
 
 # ── Squares — long session ────────────────────────────────────────────────────
@@ -172,6 +210,11 @@ def test_scrabble7_help_during_session(tmp_path):
     assert rc == 0
     assert "CONTROLS" in clean
     assert "NWL" in clean
+    # Every scrabble set documents the shared symbol legend and tab shortcut.
+    assert "SYMBOLS" in clean
+    assert "▶" in clean
+    assert "▹" in clean  # three-tier commonness legend
+    assert "tab" in clean
 
 
 @requires_cache_7
@@ -232,10 +275,24 @@ def test_scrabble7_second_run_loads_state(tmp_path):
 
 @requires_cache_7
 def test_scrabble7_wrong_answer_records_again(tmp_path):
-    run_cli(["scrabble7", "--memory-dir", str(tmp_path)], ["ZZZZZZZ", ""])
+    # A valid anagram of the rack that isn't a word is a real wrong answer → Again.
+    wrong = _first_scrabble_nonword(CACHE_7, top_n=1000, common_filter=True)
+    run_cli(["scrabble7", "--memory-dir", str(tmp_path)], [wrong, ""])
     d = json.loads((tmp_path / "scrabble7.json").read_text())
     card = next(iter(d["cards"].values()))
     assert card["reviews"][0]["rating"] == 1  # Again
+
+
+@requires_cache_7
+def test_scrabble7_non_anagram_is_rejected_not_recorded(tmp_path):
+    # A non-anagram (wrong tiles) is rejected like pre-submission typing: it shows
+    # feedback and re-prompts but records no review. The following blank (idk) is
+    # what actually scores the card, so exactly one review should be recorded.
+    run_cli(["scrabble7", "--memory-dir", str(tmp_path)], ["XXXXXXX", "", ""])
+    d = json.loads((tmp_path / "scrabble7.json").read_text())
+    card = next(iter(d["cards"].values()))
+    assert len(card["reviews"]) == 1
+    assert card["reviews"][0]["rating"] == 1  # Again (the blank idk, not the rejection)
 
 
 @requires_cache_7
@@ -379,33 +436,43 @@ def test_oscars_wrong_answer_records_again(tmp_path):
     assert card["reviews"][0]["rating"] == 1  # Again
 
 
-# ── scrabble-2s ───────────────────────────────────────────────────────────────
+# ── scrabble-2s-legacy (list-style, type-all) ─────────────────────────────────
 
-def test_2s_shows_prompt(tmp_path):
-    clean, _, err, rc = run_cli(["scrabble-2s", "--memory-dir", str(tmp_path)], reveal_n(1))
+def test_2s_legacy_shows_prompt(tmp_path):
+    clean, _, err, rc = run_cli(["scrabble-2s-legacy", "--memory-dir", str(tmp_path)], reveal_n(1))
     assert rc == 0
     assert err == ""
     assert "?" in clean
 
 
-def test_2s_creates_memory_file(tmp_path):
-    run_cli(["scrabble-2s", "--memory-dir", str(tmp_path)], reveal_n(1))
-    mem = tmp_path / "scrabble-2s.json"
+def test_2s_legacy_help_shows_shared_scrabble_legend(tmp_path):
+    """The legacy list-style set keeps the same symbol/tab help as the anagram sets."""
+    clean, _, err, rc = run_cli(["scrabble-2s-legacy", "--memory-dir", str(tmp_path)], ["?", "", ""])
+    assert rc == 0
+    assert "CONTROLS" in clean
+    assert "SYMBOLS" in clean
+    assert "▶" in clean
+    assert "▹" in clean  # three-tier commonness legend
+    assert "tab" in clean
+
+
+def test_2s_legacy_creates_memory_file(tmp_path):
+    run_cli(["scrabble-2s-legacy", "--memory-dir", str(tmp_path)], reveal_n(1))
+    mem = tmp_path / "scrabble-2s-legacy.json"
     assert mem.exists()
     d = json.loads(mem.read_text())
     assert len(d["cards"]) >= 1
 
 
-def test_2s_wrong_answer_records_again(tmp_path):
-    run_cli(["scrabble-2s", "--memory-dir", str(tmp_path)], ["ZZZZZZ", ""])
-    d = json.loads((tmp_path / "scrabble-2s.json").read_text())
+def test_2s_legacy_wrong_answer_records_again(tmp_path):
+    run_cli(["scrabble-2s-legacy", "--memory-dir", str(tmp_path)], ["ZZZZZZ", ""])
+    d = json.loads((tmp_path / "scrabble-2s-legacy.json").read_text())
     card = next(iter(d["cards"].values()))
     assert card["reviews"][0]["rating"] == 1  # Again
 
 
-def test_2s_correct_answer_for_first_card(tmp_path):
-    # "A?" card — H is always a valid extending letter (AH is NWL)
-    # Find first card shown and answer with its full valid set
+def test_2s_legacy_correct_answer_for_first_card(tmp_path):
+    # Find first card shown and answer with its full valid set.
     import sys, os
     sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'src'))
     from scrabble.ExtensionCardSet import AcExtensionCardSet
@@ -413,7 +480,7 @@ def test_2s_correct_answer_for_first_card(tmp_path):
     first = cs.cards[0]
     valid_str = "".join(sorted(first.getAnswer()._valid_letters))
     clean, _, err, rc = run_cli(
-        ["scrabble-2s", "--memory-dir", str(tmp_path)],
+        ["scrabble-2s-legacy", "--memory-dir", str(tmp_path)],
         [valid_str, ""],
     )
     assert rc == 0
@@ -421,7 +488,174 @@ def test_2s_correct_answer_for_first_card(tmp_path):
     assert "✔︎" in clean
 
 
-def test_2s_long_session(tmp_path):
-    clean, _, err, rc = run_cli(["scrabble-2s", "--memory-dir", str(tmp_path)], reveal_n(5))
+def test_2s_legacy_long_session(tmp_path):
+    clean, _, err, rc = run_cli(["scrabble-2s-legacy", "--memory-dir", str(tmp_path)], reveal_n(5))
     assert rc == 0
     assert err == ""
+
+
+# ── scrabble-2s (batched: only vowel bases split into segments) ────────────────
+
+def test_2s_batched_shows_prompt(tmp_path):
+    clean, _, err, rc = run_cli(["scrabble-2s", "--memory-dir", str(tmp_path)], reveal_n(1))
+    assert rc == 0
+    assert err == ""
+    assert "?" in clean
+
+
+def test_2s_batched_help_omits_tab(tmp_path):
+    clean, _, err, rc = run_cli(["scrabble-2s", "--memory-dir", str(tmp_path)], ["?", "", ""])
+    assert rc == 0
+    assert "SYMBOLS" in clean
+    assert "within the shown group" in clean
+    assert "tab" not in clean               # batched sets defer the tab panel
+
+
+def test_2s_batched_creates_memory_file(tmp_path):
+    run_cli(["scrabble-2s", "--memory-dir", str(tmp_path)], reveal_n(1))
+    assert (tmp_path / "scrabble-2s.json").exists()
+
+
+def test_2s_batched_correct_first_card(tmp_path):
+    import sys
+    sys.path.insert(0, SRC)
+    from scrabble.ExtensionCardSet import AcBatchedExtensionCardSet
+    first = AcBatchedExtensionCardSet.scrabble_2s().cards[0]
+    answer = "".join(sorted(first.getAnswer()._valid_letters))
+    clean, _, err, rc = run_cli(["scrabble-2s", "--memory-dir", str(tmp_path)], [answer, ""])
+    assert rc == 0
+    assert err == ""
+    assert "✔︎" in clean
+
+
+# ── scrabble-2s+-cloze (atomic cloze) ─────────────────────────────────────────
+
+def _first_cloze_card():
+    import sys
+    sys.path.insert(0, SRC)
+    from scrabble.ExtensionCardSet import AcClozeExtensionCardSet
+    return AcClozeExtensionCardSet.scrabble_2s_plus().cards[0]
+
+
+def test_2s_plus_cloze_shows_prompt(tmp_path):
+    clean, _, err, rc = run_cli(["scrabble-2s+-cloze", "--memory-dir", str(tmp_path)], reveal_n(1))
+    assert rc == 0
+    assert err == ""
+    assert "?" in clean
+
+
+def test_2s_plus_cloze_help_omits_tab(tmp_path):
+    clean, _, err, rc = run_cli(["scrabble-2s+-cloze", "--memory-dir", str(tmp_path)], ["?", "", ""])
+    assert rc == 0
+    assert "SYMBOLS" in clean              # shares the commonness/extension legend
+    assert "single missing extension" in clean
+    assert "tab" not in clean              # the cloze set defers the tab panel
+
+
+def test_2s_plus_cloze_correct_answer(tmp_path):
+    card = _first_cloze_card()
+    target = card.getAnswer().target_letter
+    answer = "" if target is None else target
+    clean, _, err, rc = run_cli(["scrabble-2s+-cloze", "--memory-dir", str(tmp_path)], [answer, ""])
+    assert rc == 0
+    assert err == ""
+    assert "✔︎" in clean
+
+
+def test_2s_plus_cloze_wrong_records_again(tmp_path):
+    ans = _first_cloze_card().getAnswer()
+    wrong = next(c for c in string.ascii_uppercase
+                 if ans.isValid(c) and c != ans.target_letter)
+    run_cli(["scrabble-2s+-cloze", "--memory-dir", str(tmp_path)], [wrong, ""])
+    d = json.loads((tmp_path / "scrabble-2s+-cloze.json").read_text())
+    card = next(iter(d["cards"].values()))
+    assert card["reviews"][0]["rating"] == 1  # Again
+
+
+def test_2s_plus_cloze_invalid_not_recorded(tmp_path):
+    # A non-candidate keystroke (digits) is rejected and re-prompted, not scored;
+    # the following blank idk is the only review recorded.
+    run_cli(["scrabble-2s+-cloze", "--memory-dir", str(tmp_path)], ["123", "", ""])
+    d = json.loads((tmp_path / "scrabble-2s+-cloze.json").read_text())
+    card = next(iter(d["cards"].values()))
+    assert len(card["reviews"]) == 1
+
+
+# ── scrabble-2s+ (canonical, batched) ─────────────────────────────────────────
+
+def _first_batched_card():
+    import sys
+    sys.path.insert(0, SRC)
+    from scrabble.ExtensionCardSet import AcBatchedExtensionCardSet
+    return AcBatchedExtensionCardSet.scrabble_2s_plus().cards[0]
+
+
+def test_2s_plus_help_omits_tab(tmp_path):
+    clean, _, err, rc = run_cli(["scrabble-2s+", "--memory-dir", str(tmp_path)], ["?", "", ""])
+    assert rc == 0
+    assert "SYMBOLS" in clean
+    assert "within the shown group" in clean
+    assert "tab" not in clean               # batched is cloze-style; tab is deferred
+
+
+def test_2s_plus_prompt_shows_all_segments(tmp_path):
+    # Roots drip-feed by play frequency, so the first several (QI/XI/OX…) are
+    # small legacy cards; reveal through to the first batched (5+) card.
+    import sys
+    sys.path.insert(0, SRC)
+    from scrabble.ExtensionCardSet import AcBatchedExtensionCardSet
+    from scrabble.AcBatchedExtensionCard import AcBatchedExtensionCard
+    cards = AcBatchedExtensionCardSet.scrabble_2s_plus().cards
+    first_batched = next(i for i, c in enumerate(cards) if isinstance(c, AcBatchedExtensionCard))
+    clean, _, err, rc = run_cli(["scrabble-2s+", "--memory-dir", str(tmp_path)],
+                                reveal_n(first_batched + 1))
+    assert rc == 0
+    assert err == ""
+    assert "AEIOU" in clean                 # every segment shown contiguously
+    assert "JKQXZ" in clean
+
+
+def test_2s_plus_correct(tmp_path):
+    card = _first_batched_card()
+    answer = "".join(sorted(card.getAnswer()._valid_letters))   # "" if the subset is empty
+    clean, _, err, rc = run_cli(["scrabble-2s+", "--memory-dir", str(tmp_path)], [answer, ""])
+    assert rc == 0
+    assert err == ""
+    assert "✔︎" in clean
+
+
+def test_2s_plus_creates_memory(tmp_path):
+    run_cli(["scrabble-2s+", "--memory-dir", str(tmp_path)], reveal_n(1))
+    assert (tmp_path / "scrabble-2s+.json").exists()
+
+
+# ── id-rename migrations ──────────────────────────────────────────────────────
+
+def test_migration_cloze_and_batched_swap_ids(tmp_path):
+    """The cloze set vacates scrabble-2s+ for its -cloze id, and the batched set
+    (formerly scrabble-2s+batched) claims the canonical scrabble-2s+ id — with
+    each set's prior review history following it."""
+    # legacy already present so the list-style→legacy move is a no-op
+    (tmp_path / "scrabble-2s+legacy.json").write_text(
+        json.dumps({"cardset_id": "scrabble-2s+legacy", "cards": {}, "total_cards": 214}))
+    (tmp_path / "scrabble-2s+.json").write_text(
+        json.dumps({"cardset_id": "scrabble-2s+", "cards": {"cloze-hist": {}}, "total_cards": 1224}))
+    (tmp_path / "scrabble-2s+batched.json").write_text(
+        json.dumps({"cardset_id": "scrabble-2s+batched", "cards": {"batched-hist": {}}, "total_cards": 900}))
+
+    run_cli(["scrabble-2s+", "--memory-dir", str(tmp_path)], reveal_n(1))
+
+    cloze = json.loads((tmp_path / "scrabble-2s+-cloze.json").read_text())
+    assert "cloze-hist" in cloze["cards"]        # cloze history moved to its new id
+    batched = json.loads((tmp_path / "scrabble-2s+.json").read_text())
+    assert "batched-hist" in batched["cards"]    # batched history now under canonical id
+
+
+def test_migration_2s_list_style_to_legacy(tmp_path):
+    """The list-style 2s set moves aside to scrabble-2s-legacy, freeing
+    scrabble-2s for the batched build."""
+    (tmp_path / "scrabble-2s.json").write_text(
+        json.dumps({"cardset_id": "scrabble-2s", "cards": {"old2s": {}}, "total_cards": 52}))
+    run_cli(["scrabble-2s-legacy", "--memory-dir", str(tmp_path)], reveal_n(1))
+    legacy = json.loads((tmp_path / "scrabble-2s-legacy.json").read_text())
+    assert "old2s" in legacy["cards"]

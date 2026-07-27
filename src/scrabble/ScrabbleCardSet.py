@@ -135,6 +135,7 @@ def _load_common(length: int, top20k: frozenset[str], top_n: int) -> list:
 class ScrabbleCardSet(CardSet):
     rating_time_threshold_s = 7
     _top20k: frozenset[str] | None = None
+    _top50k: frozenset[str] | None = None
     _ext_lookup = None
 
     @classmethod
@@ -143,6 +144,13 @@ class ScrabbleCardSet(CardSet):
             from wordfreq import top_n_list
             cls._top20k = frozenset(top_n_list('en', 20000))
         return cls._top20k
+
+    @classmethod
+    def _get_top50k(cls) -> frozenset[str]:
+        if cls._top50k is None:
+            from wordfreq import top_n_list
+            cls._top50k = frozenset(top_n_list('en', 50000))
+        return cls._top50k
 
     @classmethod
     def _get_ext_lookup(cls):
@@ -165,6 +173,7 @@ class ScrabbleCardSet(CardSet):
             _write_words_cache(nwl)
 
         top20k = self._get_top20k()
+        top50k = self._get_top50k()
         ext_lookup = self._get_ext_lookup()
 
         if common_filter:
@@ -188,6 +197,7 @@ class ScrabbleCardSet(CardSet):
                 nwl_words=e["nwl"],
                 top20k=top20k,
                 ext_lookup=ext_lookup,
+                top50k=top50k,
             )
             for e in entries
         ]

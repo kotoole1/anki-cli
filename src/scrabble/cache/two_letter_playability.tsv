@@ -1,0 +1,115 @@
+# Two-letter NWL word play frequency ('playability').
+# Source: John O'Laughlin's Quackle self-play playability (VORW-style),
+#   Collins run: https://pages.cs.wisc.edu/~o-laughl/collins/csw-playability.txt
+# This is the primary data behind FiveThirtyEight's 'QI is the most-played
+#   word' (QI ranks #1 here). Values are Quackle self-play play counts.
+# Collins-derived, filtered to NWL 2-letter words. The two NWL2020 additions
+#   EW and OK were not in the source run (both trivial 2-extension roots).
+# Format: WORD<tab>PLAYABILITY   (higher = played more often)
+# Provenance, the Collins caveat, and how to swap in true NWL data:
+#   see two_letter_playability.md (next to this file).
+QI	10025400
+XI	2383380
+OX	2093710
+ZA	1959950
+EX	1958560
+AX	1888120
+JO	1725270
+XU	1438760
+OF	894545
+IF	791675
+OE	784351
+YO	758144
+OI	752064
+OY	735762
+OW	734134
+WO	716950
+AW	673868
+WE	670967
+YE	610403
+FA	608272
+EF	602341
+FE	570241
+AI	544409
+HI	539882
+AA	534804
+AY	524885
+YA	515783
+UH	509659
+OH	498964
+EH	446116
+HM	434797
+AE	404198
+BI	403134
+HE	402101
+HO	397683
+BY	367858
+AH	358187
+KI	340889
+BE	333380
+MY	330861
+GI	325226
+HA	323613
+IN	314595
+ID	295792
+KA	291124
+GO	271951
+BO	271093
+IT	266948
+AB	265971
+OD	252801
+MI	248434
+PI	247596
+OP	232303
+UP	230903
+BA	228957
+OM	228076
+OR	227870
+ON	226684
+PE	222425
+AD	218245
+EM	215796
+AG	214298
+EN	210674
+TI	208741
+LI	204929
+DO	200552
+NU	200448
+NE	192701
+PO	192349
+ME	192238
+UN	190024
+DA	189054
+ED	188469
+MO	184673
+ER	183185
+AR	182849
+NO	182771
+AN	181074
+MU	180759
+UT	178392
+UM	176270
+DE	175858
+RE	172025
+ET	171196
+PA	169806
+EL	164325
+NA	163923
+TO	161515
+AM	158831
+LO	158096
+TE	152237
+SH	148099
+IS	144900
+MM	141809
+AT	137316
+MA	130176
+AL	125620
+SI	121578
+TA	116252
+LA	113170
+US	98053
+OS	90278
+ES	88524
+AS	77985
+SO	74550
