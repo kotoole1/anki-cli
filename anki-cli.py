@@ -153,6 +153,26 @@ def _draw_status_bar(scheduler) -> None:
     sys.stdout.flush()
 
 
+def _last_played(key: str, memory_dir: str) -> float | None:
+    """When this set was last played, as the mtime of its state file (each review
+    session rewrites it). None if the set has never been played."""
+    path = os.path.join(memory_dir, f"{key}.json")
+    try:
+        return os.path.getmtime(path)
+    except OSError:
+        return None
+
+
+def _menu_order(options: list[tuple[str, str]], memory_dir: str) -> list[tuple[str, str]]:
+    """Selection-menu order: most-recently-played set first. Never-played sets
+    keep their canonical relative order at the end (a stable sort on +inf), so a
+    new user still sees the default ordering until they play something."""
+    def key(kd):
+        t = _last_played(kd[0], memory_dir)
+        return -t if t is not None else float("inf")
+    return sorted(options, key=key)
+
+
 def _load_menu_stats(key: str, memory_dir: str) -> dict | None:
     path = os.path.join(memory_dir, f"{key}.json")
     if not os.path.exists(path):
@@ -198,8 +218,14 @@ def _migrate_legacy_state(memory_dir: str) -> None:
     move("scrabble-2s", "scrabble-2s-legacy")    # list-style 2s → legacy
 
 
-def _choose_cardset(stats: dict | None = None) -> str | None:
-    """Arrow-key menu to pick a card set. Falls back to usage text if not a TTY."""
+def _choose_cardset(options: list[tuple[str, str]] | None = None,
+                    stats: dict | None = None) -> str | None:
+    """Arrow-key menu to pick a card set. Falls back to usage text if not a TTY.
+
+    `options` is the ordered (key, desc) list to display (most-recently-played
+    first, via _menu_order); defaults to the canonical _CARDSET_OPTIONS."""
+    if options is None:
+        options = _CARDSET_OPTIONS
     if not sys.stdin.isatty():
         print("usage:   uv run anki-cli.py <cardset>")
         print("example: uv run anki-cli.py scrabble7")
@@ -219,11 +245,11 @@ def _choose_cardset(stats: dict | None = None) -> str | None:
         cols = shutil.get_terminal_size().columns
         # _NAME_W is the 80-col baseline; widen if a set id (e.g. the legacy one)
         # is longer so names never ellipsize into ambiguity.
-        name_w = max(_NAME_W, *(len(k) for k, _ in _CARDSET_OPTIONS))
+        name_w = max(_NAME_W, *(len(k) for k, _ in options))
         while True:
             sys.stdout.write(_CLEAR)
             _draw_hint()
-            for i, (key, desc) in enumerate(_CARDSET_OPTIONS):
+            for i, (key, desc) in enumerate(options):
                 marker = "> " if i == idx else "  "
                 s = (stats or {}).get(key)
                 stats_str = ""
@@ -247,14 +273,14 @@ def _choose_cardset(stats: dict | None = None) -> str | None:
             if ch in (b'\x03', b'\x04'):
                 break
             elif ch in (b'\r', b'\n'):
-                result = _CARDSET_OPTIONS[idx][0]
+                result = options[idx][0]
                 break
             elif ch == b'\x1b':
                 seq = sys.stdin.buffer.read(2)
                 if seq == b'[A':
-                    idx = (idx - 1) % len(_CARDSET_OPTIONS)
+                    idx = (idx - 1) % len(options)
                 elif seq == b'[B':
-                    idx = (idx + 1) % len(_CARDSET_OPTIONS)
+                    idx = (idx + 1) % len(options)
     finally:
         termios.tcsetattr(fd, termios.TCSADRAIN, old)
         sys.stdout.write("\033[?25h")  # restore cursor
@@ -363,7 +389,8 @@ def run(args: list[str]):
             for key, _ in _CARDSET_OPTIONS
             if (s := _load_menu_stats(key, memory_dir)) is not None
         }
-        chosen = _choose_cardset(_menu_stats)
+        _menu_options = _menu_order(_CARDSET_OPTIONS, memory_dir)
+        chosen = _choose_cardset(_menu_options, _menu_stats)
         if not chosen:
             return
         parsed_args.cardset = chosen
