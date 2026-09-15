@@ -108,6 +108,15 @@ _SHORTCUTS = {
 _RATINGS      = [Rating.Again, Rating.Hard, Rating.Good, Rating.Easy]
 _RATING_NAMES = ["🆇 Again 🆇", "⌇ Hard ⌇ ", "✔︎ Good ✔︎ ", "⍟ Easy ⍟ "]
 
+_RED   = "\033[91m"
+_RESET = "\033[0m"
+
+# A failed card is the one worth reading, and Enter is pressed reflexively while
+# still typing. Swallow Enter for this long after the answer screen appears so
+# the correct answer is actually looked at before the deck moves on.
+_AGAIN_LOCKOUT_SECS = 1.0
+_AGAIN_LOCKOUT_MSG  = "Card failed! Enter prevented for 1s"
+
 def _goto(row, col):
     return f"\033[{row};{col}H"
 
@@ -475,18 +484,20 @@ def _paint_cloze_question(card, scheduler, clue, feedback=None) -> None:
     sys.stdout.flush()
 
 
-def _paint_answer(scheduler, clue, guess, idx, rack_stat, answer_text) -> None:
+def _paint_answer(scheduler, clue, guess, idx, rack_stat, answer_text, warning="") -> None:
     """Repaint the post-submit screen pinned to the top (no scroll, so the clue
     line never disappears): clue, the submitted guess, the rating selector, then
-    the full answer list."""
+    the full answer list. `warning` is appended to the rating line (used for the
+    failed-card Enter lockout notice)."""
     left  = "← " if idx > 0               else "  "
     right = " →" if idx < len(_RATINGS) - 1 else "  "
+    tail  = f"   {_RED}{warning}{_RESET}" if warning else ""
     sys.stdout.write(_CLEAR)
     _draw_status_bar(scheduler)
     sys.stdout.write(_goto(1, 1))
     sys.stdout.write(clue.replace("\n", "\r\n") + "\r\n")
     sys.stdout.write(f"> {guess}\r\n")
-    sys.stdout.write(f"{left}{_RATING_NAMES[idx]}{right}{rack_stat}   \r\n")
+    sys.stdout.write(f"{left}{_RATING_NAMES[idx]}{right}{rack_stat}{tail}   \r\n")
     sys.stdout.write(answer_text.replace("\n", "\r\n") + "\r\n")
     sys.stdout.flush()
 
@@ -593,17 +604,30 @@ def _study_loop(cardset: CardSet, cardset_key: str, scheduler=None):
                     tty.setraw(fd)
                     sys.stdout.write("\033[?25l")  # hide cursor
                     _paint_answer(scheduler, clue_revealed, user_input, idx, rack_stat, answer_text)
+                    # Failed cards only: Enter is dead until the lockout expires.
+                    lockout_until = (
+                        time.time() + _AGAIN_LOCKOUT_SECS
+                        if auto_rating == Rating.Again else 0.0
+                    )
+                    warning = ""
                     while True:
                         ch = sys.stdin.buffer.read(1)
                         if ch in (b'\x03', b'\x04'):
                             raise KeyboardInterrupt
                         if ch in (b'\r', b'\n'):
-                            break
+                            if time.time() >= lockout_until:
+                                break
+                            if not warning:
+                                warning = _AGAIN_LOCKOUT_MSG
+                                _paint_answer(scheduler, clue_revealed, user_input, idx,
+                                              rack_stat, answer_text, warning)
+                            continue
                         # ctrl-o extension panel: every scrabble set but the cloze one.
                         # TODOCC: add an answer-safe (post-submit) extension panel for cloze.
                         if ch in (b'\x0f', b'\t') and not is_cloze:
                             _show_extensions_panel(card)
-                            _paint_answer(scheduler, clue_revealed, user_input, idx, rack_stat, answer_text)
+                            _paint_answer(scheduler, clue_revealed, user_input, idx,
+                                          rack_stat, answer_text, warning)
                             continue
                         if ch == b'\x1b':
                             seq = sys.stdin.buffer.read(2)
@@ -611,7 +635,8 @@ def _study_loop(cardset: CardSet, cardset_key: str, scheduler=None):
                                 idx = max(0, idx - 1)
                             elif seq == b'[C':
                                 idx = min(len(_RATINGS) - 1, idx + 1)
-                            _paint_answer(scheduler, clue_revealed, user_input, idx, rack_stat, answer_text)
+                            _paint_answer(scheduler, clue_revealed, user_input, idx,
+                                          rack_stat, answer_text, warning)
                 finally:
                     sys.stdout.write("\033[?25h")  # restore cursor
                     sys.stdout.flush()

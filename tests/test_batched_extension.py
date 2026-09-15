@@ -101,8 +101,19 @@ def test_2s_plus_roots_stay_clustered_in_drip_order(batched):
 def test_card_shows_all_five_segments(batched):
     c = _some_batched(batched, lambda a: True)
     clue = _strip(c.clue_text())
+    # The active segment is spaced out for readability; the rest stay compact.
     for seg in ("AEIOU", "LNRST", "BCDGMP", "FHVWY", "JKQXZ"):
-        assert seg in clue
+        assert seg in clue or " ".join(seg) in clue
+
+
+def test_active_segment_is_spaced_out(batched):
+    """The active batch (the one you answer) renders spaced ('L N R S T'); the
+    non-active context segments stay compact."""
+    c = _some_batched(batched, lambda a: a._valid_letters)
+    a = c.getAnswer()
+    clue = _strip(a.clue_text())
+    assert " ".join(a._active_display) in clue          # active spaced
+    assert a._active_display not in clue                # …and not also compact
 
 
 def test_active_hidden_pre_submit_colored_by_guess():
@@ -198,6 +209,23 @@ def test_iscorrect_active_segment_letters(batched):
     assert not c.isCorrect("")
 
 
+def test_batched_rejects_letters_outside_active_segment():
+    """Regression: `?O` with FHVWY active — typing 'jwy' must be rejected (J is
+    outside the shown segment), not scored as a wrong answer."""
+    from scrabble.AcBatchedExtensionCard import AcBatchedExtensionAnswer
+    a = AcBatchedExtensionAnswer("2s+b-O-left-FHVWY", "O", "left", "FHVWY",
+                                 frozenset("FW"), frozenset("FWX"),
+                                 [("FO", ""), ("WO", ""), ("XO", "")])
+    assert a.isValid("")            # idk
+    assert a.isValid("FW")          # letters within the active segment
+    assert a.isValid("f h v")       # case- and space-tolerant, all in FHVWY
+    assert not a.isValid("jwy")     # J is outside FHVWY → rejected (the bug)
+    assert not a.isValid("F1")      # non-letter → rejected
+    fb = _strip(a.getInvalidFeedback("jwy"))
+    assert "Which of these letters complete ?O" in fb
+    assert "F H V W Y" in fb         # the active segment, spaced
+
+
 def test_feedback_plus_missing_minus_extra(batched):
     c = _some_batched(batched, lambda a: a._valid_letters)
     a = c.getAnswer()
@@ -277,3 +305,23 @@ def test_2s_vowel_base_splits_into_segments(batched_2s):
     a_right = [c for c in batched_2s.cards
                if c.id.startswith("2s-A-right") and isinstance(c, AcBatchedExtensionCard)]
     assert len(a_right) >= 2
+
+
+def test_2s_split_is_total_vowels_batched_consonants_legacy(batched_2s):
+    """Every vowel base is batched and every consonant base is legacy — no
+    exceptions (the vowel/consonant split is total, not count-gated)."""
+    for c in batched_2s.cards:
+        base = c.getAnswer().base_word if isinstance(c, AcBatchedExtensionCard) \
+            else c.id.split("-")[1]
+        if base in _VOWELS:
+            assert isinstance(c, AcBatchedExtensionCard), f"{c.id}: vowel not batched"
+        else:
+            assert isinstance(c, ExtensionCard), f"{c.id}: consonant not legacy"
+
+
+def test_2s_sparse_vowel_still_batched(batched_2s):
+    """Regression: ?U has only a few extensions but must still be batched (it was
+    falling under a 5+ count threshold and staying legacy)."""
+    u_left = [c for c in batched_2s.cards if c.id.startswith("2s-U-left")]
+    assert u_left
+    assert all(isinstance(c, AcBatchedExtensionCard) for c in u_left)

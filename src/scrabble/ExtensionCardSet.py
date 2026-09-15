@@ -173,15 +173,16 @@ def _segment_is_relevant(family, direction, group, results):
 
 
 def _batched_pattern_cards(base_word, direction, valid, all_words, results,
-                           valid_bases, eligible, prefix,
+                           valid_bases, batched, prefix,
                            ext_lookup, top20k, top50k):
     """The card(s) one (base, direction) pattern contributes to a batched set.
 
-    Not `eligible`, or ≤4 extensions → a single legacy "type them all" card. An
-    eligible 5+ pattern splits into per-segment cloze-by-segment cards, one per
-    alphabet segment the base OR a vowel-cousin extends into (so meaningful empty
-    segments are still confirmed without showing every segment on every base)."""
-    if not eligible or len(valid) <= 4:
+    `batched` False → a single legacy "type them all" card. `batched` True →
+    per-segment cloze-by-segment cards, one per alphabet segment the base OR a
+    vowel-cousin extends into (so meaningful empty segments are still confirmed
+    without showing every segment on every base). The caller decides what
+    batches: 2s+ batches any 5+-extension bigram; 2s batches every vowel base."""
+    if not batched:
         cid = f"{prefix}-{base_word}-{direction}"
         prompt_text = f"{base_word}?" if direction == "right" else f"?{base_word}"
         return [ExtensionCard(cid, prompt_text, valid, all_words,
@@ -231,18 +232,19 @@ def _build_2s_plus_batched(nwl, defs, ext_lookup, top20k=frozenset(), top50k=fro
             all_words = [(make(c), defs.get(make(c), "")) for c in sorted(valid)]
             cards.extend(_batched_pattern_cards(
                 word, direction, valid, all_words, threes, twos_set,
-                eligible=True, prefix="2s+b",
+                batched=(len(valid) >= 5), prefix="2s+b",
                 ext_lookup=ext_lookup, top20k=top20k, top50k=top50k))
     return cards
 
 
 def _build_2s_batched(nwl, defs, ext_lookup, top20k=frozenset(), top50k=frozenset()):
-    """Hybrid 2s set. Only vowel bases (A/E/I/O/U) are eligible for batching: a
-    consonant's 2-letter extensions cluster almost entirely in the vowel segment,
-    so splitting them into segments is pure noise. Consonant bases (and any
-    ≤4-extension vowel base) therefore stay a single legacy card; vowel bases
-    with 5+ extensions split into relevant per-segment cards. Reveal order
-    matches the legacy 2s set (consonants first, then vowels)."""
+    """Hybrid 2s set. Every vowel base (A/E/I/O/U) is batched into per-segment
+    cards; every consonant base stays a single legacy card — a consonant's
+    2-letter extensions cluster almost entirely in the vowel segment, so
+    splitting them is pure noise. Vowels batch regardless of extension count
+    (even sparse ones like U), so the vowel/consonant split is total and
+    predictable. Reveal order matches the legacy 2s set (consonants, then
+    vowels)."""
     twos = {w for w in nwl if len(w) == 2}
     valid_bases = frozenset(_LETTERS)   # every single letter is a legal base
     cards = []
@@ -257,7 +259,7 @@ def _build_2s_batched(nwl, defs, ext_lookup, top20k=frozenset(), top50k=frozense
             all_words = [(make(c), defs.get(make(c), "")) for c in sorted(valid)]
             cards.extend(_batched_pattern_cards(
                 letter, direction, valid, all_words, twos, valid_bases,
-                eligible=(letter in _VOWELS), prefix="2s",
+                batched=(letter in _VOWELS), prefix="2s",
                 ext_lookup=ext_lookup, top20k=top20k, top50k=top50k))
     return cards
 

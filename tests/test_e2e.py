@@ -611,8 +611,9 @@ def test_2s_plus_prompt_shows_all_segments(tmp_path):
                                 reveal_n(first_batched + 1))
     assert rc == 0
     assert err == ""
-    assert "AEIOU" in clean                 # every segment shown contiguously
-    assert "JKQXZ" in clean
+    # Each segment shows; the active one is spaced out, so accept either form.
+    assert "AEIOU" in clean or "A E I O U" in clean
+    assert "JKQXZ" in clean or "J K Q X Z" in clean
 
 
 def test_2s_plus_correct(tmp_path):
@@ -627,6 +628,26 @@ def test_2s_plus_correct(tmp_path):
 def test_2s_plus_creates_memory(tmp_path):
     run_cli(["scrabble-2s+", "--memory-dir", str(tmp_path)], reveal_n(1))
     assert (tmp_path / "scrabble-2s+.json").exists()
+
+
+def test_2s_plus_batched_out_of_segment_rejected_not_scored(tmp_path):
+    """A letter outside the shown active segment is re-prompted (custom help),
+    not scored — so only the following blank is recorded."""
+    import sys
+    import string as _string
+    sys.path.insert(0, SRC)
+    from scrabble.ExtensionCardSet import AcBatchedExtensionCardSet
+    from scrabble.AcBatchedExtensionCard import AcBatchedExtensionCard
+    cards = AcBatchedExtensionCardSet.scrabble_2s_plus().cards
+    i = next(i for i, c in enumerate(cards) if isinstance(c, AcBatchedExtensionCard))
+    active = cards[i].getAnswer()._active
+    outside = next(ch for ch in _string.ascii_uppercase if ch not in active)
+    clean, _, err, rc = run_cli(["scrabble-2s+", "--memory-dir", str(tmp_path)],
+                                reveal_n(i) + [outside, "", ""])
+    assert rc == 0
+    assert "Which of these letters complete" in clean       # custom help shown
+    d = json.loads((tmp_path / "scrabble-2s+.json").read_text())
+    assert len(d["cards"][cards[i].id]["reviews"]) == 1      # the slip wasn't scored
 
 
 # ── id-rename migrations ──────────────────────────────────────────────────────
@@ -659,3 +680,77 @@ def test_migration_2s_list_style_to_legacy(tmp_path):
     run_cli(["scrabble-2s-legacy", "--memory-dir", str(tmp_path)], reveal_n(1))
     legacy = json.loads((tmp_path / "scrabble-2s-legacy.json").read_text())
     assert "old2s" in legacy["cards"]
+
+
+# ── failed-card Enter lockout (needs a real tty) ──────────────────────────────
+
+def _pty_squares():
+    """Launch the squares set under a pty and return (pid, fd, read_fn).
+
+    The lockout only exists on the raw-tty answer screen, so the pipe-based
+    run_cli() harness above can't reach it. Squares has no scheduler, so these
+    runs write no review state.
+    """
+    import pty
+    import select
+    import time
+
+    pid, fd = pty.fork()
+    if pid == 0:                       # child: exec'd, never returns
+        os.chdir(ROOT)
+        os.execv(PYTHON, [PYTHON, CLI, "squares"])
+
+    def read_for(seconds: float) -> str:
+        out, end = b"", time.time() + seconds
+        while time.time() < end:
+            if select.select([fd], [], [], 0.05)[0]:
+                try:
+                    out += os.read(fd, 65536)
+                except OSError:
+                    break
+        return strip_ansi(out.decode(errors="replace"))
+
+    return pid, fd, read_for
+
+
+def test_failed_card_blocks_enter_then_allows_it():
+    import signal
+    import time
+
+    pid, fd, read_for = _pty_squares()
+    try:
+        assert "= ?" in read_for(4.0)          # first question is up
+        os.write(fd, b"999999\r")              # certainly wrong -> Again screen
+        read_for(0.3)                          # well inside the 1s lockout
+
+        os.write(fd, b"\r")                    # too soon: swallowed, warns in red
+        assert "Enter prevented" in read_for(0.4)
+
+        time.sleep(1.2)                        # past the 1s lockout, with margin
+        os.write(fd, b"\r")                    # lockout expired: next card
+        assert "= ?" in read_for(2.0)
+    finally:
+        os.kill(pid, signal.SIGKILL)
+        os.waitpid(pid, 0)
+        os.close(fd)
+
+
+def test_correct_card_does_not_block_enter():
+    import signal
+
+    pid, fd, read_for = _pty_squares()
+    try:
+        prompt = read_for(4.0)
+        n = int(re.findall(r"(\d+)", prompt)[-1])
+        answer = round(n ** 0.5) if "√" in prompt else n * n
+        os.write(fd, f"{answer}\r".encode())
+        read_for(0.5)
+
+        os.write(fd, b"\r")                    # correct card: advances immediately
+        out = read_for(1.0)
+        assert "Enter prevented" not in out
+        assert "= ?" in out
+    finally:
+        os.kill(pid, signal.SIGKILL)
+        os.waitpid(pid, 0)
+        os.close(fd)

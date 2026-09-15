@@ -80,23 +80,25 @@ class AcBatchedExtensionAnswer(CardAnswer):
         parts = []
         for disp in _DISPLAY_SEGMENTS:
             active = frozenset(disp) == self._active
-            chunk = ""
+            cells = []
             for ch in disp:
                 if active:
                     if not revealed:
-                        chunk += ch                                  # hidden (white)
+                        cells.append(ch)                             # hidden (white)
                     else:
                         valid = ch in self._valid_letters
                         given = ch in self._last_guess
-                        if valid and given:   chunk += f"{_GREEN}{ch}{_RESET}"   # got it
-                        elif valid:           chunk += f"{_PURPLE}{ch}{_RESET}"  # missed
-                        elif given:           chunk += f"{_RED}{ch}{_RESET}"     # wrong
-                        else:                 chunk += f"{_DIM}{ch}{_RESET}"     # correctly skipped
+                        if valid and given:   cells.append(f"{_GREEN}{ch}{_RESET}")   # got it
+                        elif valid:           cells.append(f"{_PURPLE}{ch}{_RESET}")  # missed
+                        elif given:           cells.append(f"{_RED}{ch}{_RESET}")     # wrong
+                        else:                 cells.append(f"{_DIM}{ch}{_RESET}")     # correctly skipped
                 else:
-                    chunk += (f"{_BLUE}{ch}{_RESET}" if ch in self._all_valid
-                              else f"{_DIM}{ch}{_RESET}")
-            parts.append(chunk)
-        return "  ".join(parts)
+                    cells.append(f"{_BLUE}{ch}{_RESET}" if ch in self._all_valid
+                                 else f"{_DIM}{ch}{_RESET}")
+            # Space out the active segment (the one you're answering) so it reads
+            # apart from the compact greyed context segments.
+            parts.append((" " if active else "").join(cells))
+        return "   ".join(parts)
 
     def clue_text(self, guess: str | None = None, revealed: bool = False) -> str:
         return f"{self.prompt_text}   {self._segment_display(revealed)}"
@@ -142,6 +144,24 @@ class AcBatchedExtensionAnswer(CardAnswer):
     def isCorrect(self, answer: str) -> bool:
         self._last_guess = frozenset(c for c in answer.upper() if c.isalpha())
         return self._last_guess == self._valid_letters
+
+    def isValid(self, answer: str) -> bool:
+        """A scorable attempt is empty (idk) or letters drawn only from the shown
+        active segment. A letter from outside it (J when FHVWY is active) is a
+        slip, not a wrong answer — the study loop rejects it and re-prompts via
+        getInvalidFeedback, exactly as ScrabbleAnswer.isValid rejects tokens that
+        aren't rack anagrams and AcClozeExtensionAnswer.isValid rejects a guess
+        outside its shown alphabet."""
+        for ch in answer.upper():
+            if ch.isspace():
+                continue
+            if not ch.isalpha() or ch not in self._active:
+                return False
+        return True
+
+    def getInvalidFeedback(self, submitted: str) -> str:
+        return (f"  Which of these letters complete {self.prompt_text}:  "
+                f"{' '.join(self._active_display)}")
 
     def getWrongAnswerFeedback(self, submitted: str) -> str:
         given   = frozenset(c for c in submitted.upper() if c.isalpha())
