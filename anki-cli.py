@@ -51,6 +51,7 @@ _DESC_W = 30
 
 _CARDSET_OPTIONS = [
     ("oscars",        "Oscar Best Picture winners"),
+    ("broncos",       "Broncos 2026 roster + coaches"),
     ("scrabble7",     "7-letter bingos (1k, common)"),
     ("scrabble7-1k",  "7-letter bingos (1k, any word)"),
     ("scrabble8",     "8-letter bingos (1k, common)"),
@@ -84,6 +85,12 @@ _CARDSET_HELP = {
     "scrabble-2s+legacy": "Type all valid extending letters in any order (e.g. SHL or B).\n",
     "scrabble-hv":   "Type ALL valid NWL words for the rack, separated by spaces or commas.\n",
     "oscars":        "Type the Best Picture title. Glob shorthand: gl* matches Gladiator.\n",
+    "broncos":       "Fill in the ??. Slot: exact, with depth (RCB2; either one if he has two;\n"
+                     "a starter's 1 is optional: QB = QB1).\n"
+                     "Number: digits. Name: full name or just the last name, typos forgiven.\n"
+                     "Right side: salary (year joined DEN, draft pick or previous team; * = by trade).\n"
+                     "Dim tags: (O) out, (IR) injured reserve, (off) not on the active roster.\n"
+                     "The roster refreshes itself each Tuesday; --refresh forces it.\n",
 }
 
 _ENTER_ALT = "\033[?1049h"
@@ -92,6 +99,7 @@ _CLEAR     = "\033[2J\033[H"
 
 _SHORTCUTS = {
     "o": "oscars",
+    "b": "broncos",
     "s2":  "scrabble-2s",
     "s2l": "scrabble-2s-legacy",
     "s3":  "scrabble-2s+",
@@ -383,6 +391,9 @@ def run(args: list[str]):
     )
     parser.add_argument('cardset', type=str, nargs='?')
     parser.add_argument('--memory-dir', type=str, default=None)
+    parser.add_argument('--refresh', action=argparse.BooleanOptionalAction, default=None,
+                        help="broncos: refetch the roster now (--no-refresh: never; "
+                             "default: when older than last Tuesday)")
     parsed_args = parser.parse_args(args)
 
     if parsed_args.cardset:
@@ -428,6 +439,17 @@ def run(args: list[str]):
         from memory.AcReviewStore import AcReviewStore
         from memory.AcScheduler import AcScheduler
         cardset = OscarCardSet()
+        store = AcReviewStore(memory_dir)
+        scheduler = AcScheduler(cardset, store)
+    elif parsed_args.cardset == "broncos":
+        from broncos.AcBroncosCardSet import AcBroncosCardSet
+        from memory.AcReviewStore import AcReviewStore
+        from memory.AcScheduler import AcScheduler
+        try:
+            cardset = AcBroncosCardSet(refresh=parsed_args.refresh)
+        except RuntimeError as e:
+            print(e)
+            return
         store = AcReviewStore(memory_dir)
         scheduler = AcScheduler(cardset, store)
     elif parsed_args.cardset in ("scrabble-2s", "scrabble-2s-legacy", "scrabble-2s+",

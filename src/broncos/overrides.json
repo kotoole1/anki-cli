@@ -1,0 +1,90 @@
+{
+  "_doc": "Hand-edited facts the refresh can't parse. Keys are names exactly as ESPN/Wikipedia spell them. trades: teams that TRADED the person away (their next stop acquired them by trade); use \"TEAM:endyear\" to pin one of several stints. salaries: 2026 base salary where ESPN has none. stints: full replacement career when there is no usable Wikipedia infobox. coach_titles: staff-template title -> abbreviation; a title missing here gets no cards. Sources: trades from each person's Wikipedia article text; salaries from overthecap.com/salary-cap/denver-broncos (2026 base salary, read 2026-09-20); Shewmaker from denverbroncos.com/team/coaches-roster/isaac-shewmaker.",
+  "coach_titles": {
+    "Head coach": "HC",
+    "Offensive coordinator": "OC",
+    "Offensive pass game coordinator": "OPGC",
+    "Offensive run game coordinator/assistant head coach": "ORGC",
+    "Offensive run game coordinator": "ORGC",
+    "Quarterbacks": "QB",
+    "Running backs": "RB",
+    "Wide receivers": "WR",
+    "Tight ends": "TE",
+    "Offensive line": "OL",
+    "Defensive coordinator": "DC",
+    "Defensive pass game coordinator": "DPGC",
+    "Defensive line": "DL",
+    "Inside linebackers": "ILB",
+    "Outside linebackers": "OLB",
+    "Defensive backs": "DB",
+    "Special teams coordinator/assistant head coach": "STC",
+    "Special teams coordinator": "STC"
+  },
+  "wiki_titles": {},
+  "trades": {
+    "Jaylen Waddle": [
+      "MIA"
+    ],
+    "Wil Lutz": [
+      "NO"
+    ],
+    "Adam Trautman": [
+      "NO"
+    ],
+    "Jarrett Stidham": [
+      "NE"
+    ],
+    "Sean Payton": [
+      "NO:2021"
+    ]
+  },
+  "salaries": {
+    "Pat Bryant": 1139140,
+    "Jonah Coleman": 885000,
+    "Troy Franklin": 1075000,
+    "Kris Abrams-Draine": 1075000,
+    "Sai'vion Jones": 1120054,
+    "Que Robinson": 1005000,
+    "Jordan Turner": 1005000,
+    "Jeremy Crawshaw": 1005000,
+    "Jordan Jackson": 1075000,
+    "Tyler Onyedim": 885000,
+    "Kage Casey": 885000,
+    "Sam Ehlinger": 2000000,
+    "Dallen Bentley": 885000
+  },
+  "stints": {
+    "Isaac Shewmaker": [
+      {
+        "team": "Kentucky",
+        "league": "",
+        "start": 2015,
+        "end": 2015
+      },
+      {
+        "team": "Alabama",
+        "league": "",
+        "start": 2016,
+        "end": 2019
+      },
+      {
+        "team": "Tennessee",
+        "league": "",
+        "start": 2020,
+        "end": 2020
+      },
+      {
+        "team": "LAC",
+        "league": "NFL",
+        "start": 2021,
+        "end": 2022
+      },
+      {
+        "team": "DEN",
+        "league": "NFL",
+        "start": 2023,
+        "end": null
+      }
+    ]
+  }
+}

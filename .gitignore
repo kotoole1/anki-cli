@@ -30,3 +30,7 @@ tmp/
 
 # Agent use
 /memory/
+
+# Broncos roster snapshot is refetched weekly at runtime; the committed
+# seed_snapshot.json is the offline fallback.
+src/broncos/cache/

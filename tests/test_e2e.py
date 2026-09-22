@@ -754,3 +754,45 @@ def test_correct_card_does_not_block_enter():
         os.kill(pid, signal.SIGKILL)
         os.waitpid(pid, 0)
         os.close(fd)
+
+
+# ── broncos ───────────────────────────────────────────────────────────────────
+# --no-refresh keeps these off the network: they study the committed seed.
+
+_BRONCOS = ["broncos", "--no-refresh", "--memory-dir"]
+
+
+def test_broncos_first_card_is_qb1_slot_cloze(tmp_path):
+    clean, _, err, rc = run_cli(_BRONCOS + [str(tmp_path)], reveal_n(1))
+    assert rc == 0, err
+    assert "Bo Nix, ??" in clean          # question: slot hidden
+    assert "Bo Nix, QB1" not in clean and "Bo Nix, QB" in clean   # revealed; a starter shows no "1"
+    assert "drafted 1.12" in clean        # history block above the unit table
+    assert "Skill positions depth chart (ESPN, " in clean
+
+
+def test_broncos_correct_slot_is_recorded_good(tmp_path):
+    run_cli(_BRONCOS + [str(tmp_path)], ["qb1", ""])
+    d = json.loads((tmp_path / "broncos.json").read_text())
+    (cid, entry), = d["cards"].items()
+    assert cid.endswith("-pos") and entry["answer_key"] == "QB1"
+    assert entry["reviews"][0]["rating"] >= 2
+
+
+def test_broncos_starter_may_drop_the_1(tmp_path):
+    run_cli(_BRONCOS + [str(tmp_path)], ["qb", ""])
+    d = json.loads((tmp_path / "broncos.json").read_text())
+    assert next(iter(d["cards"].values()))["reviews"][0]["rating"] >= 2
+
+
+def test_broncos_wrong_depth_is_again(tmp_path):
+    run_cli(_BRONCOS + [str(tmp_path)], ["qb2", ""])
+    d = json.loads((tmp_path / "broncos.json").read_text())
+    assert next(iter(d["cards"].values()))["reviews"][0]["rating"] == 1
+
+
+def test_broncos_shortcut_and_help_listing(tmp_path):
+    clean, _, err, rc = run_cli(["b", "--no-refresh", "--memory-dir", str(tmp_path)], reveal_n(1))
+    assert rc == 0 and "??" in clean
+    clean, _, _, _ = run_cli(["--help"], [])
+    assert "broncos" in clean

@@ -1,38 +1,9 @@
-import difflib
-
 from cards.cardPrompt import SimpleTextPrompt
 from cards.cardAnswer import CardAnswer
+from cards.textMatch import fuzzy_title_match
 
 _RED   = "\033[91m"
 _RESET = "\033[0m"
-
-
-def _normalize(s: str) -> str:
-    s = s.lower().strip()
-    for prefix in ("the ", "a ", "an "):
-        if s.startswith(prefix):
-            s = s[len(prefix):]
-    return s
-
-
-def _initials(title: str) -> str:
-    return "".join(w[0] for w in title.split() if w)
-
-
-def _is_fuzzy_match(answer: str, title: str) -> bool:
-    a, t = _normalize(answer), _normalize(title)
-    if not a:
-        return False
-    if a.endswith("*"):
-        prefix = a[:-1]
-        if len(prefix) < 2:
-            return False
-        return (t.startswith(prefix)
-                or _initials(t).startswith(prefix)
-                or _initials(title.lower()).startswith(prefix))
-    if a in t or t in a:
-        return True
-    return difflib.SequenceMatcher(None, a, t).ratio() >= 0.75
 
 
 class OscarAnswer(CardAnswer):
@@ -53,7 +24,7 @@ class OscarAnswer(CardAnswer):
         return self._format()
 
     def isCorrect(self, answer: str) -> bool:
-        return _is_fuzzy_match(answer, self.title)
+        return fuzzy_title_match(answer, self.title)
 
     def getWrongAnswerFeedback(self, submitted: str) -> str:
         return f"{_RED}{submitted}{_RESET}"

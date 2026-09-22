@@ -1,0 +1,2993 @@
+{
+ "version": 1,
+ "fetched_at": "2026-09-20T18:09:15",
+ "season": 2026,
+ "chart": [
+  {
+   "slot": "LDE",
+   "ids": [
+    "3915282",
+    "4261090",
+    "4683535",
+    "4242358"
+   ]
+  },
+  {
+   "slot": "NT",
+   "ids": [
+    "3894915",
+    "4603189"
+   ]
+  },
+  {
+   "slot": "RDE",
+   "ids": [
+    "4066109",
+    "4039064"
+   ]
+  },
+  {
+   "slot": "WLB",
+   "ids": [
+    "4687592",
+    "5216101",
+    "4040608"
+   ]
+  },
+  {
+   "slot": "LILB",
+   "ids": [
+    "2612151",
+    "4693373"
+   ]
+  },
+  {
+   "slot": "RILB",
+   "ids": [
+    "3919548",
+    "4875336",
+    "4428241"
+   ]
+  },
+  {
+   "slot": "SLB",
+   "ids": [
+    "4360259",
+    "4692048"
+   ]
+  },
+  {
+   "slot": "LCB",
+   "ids": [
+    "4372012",
+    "4430925"
+   ]
+  },
+  {
+   "slot": "SS",
+   "ids": [
+    "4360853",
+    "4428503",
+    "4257240"
+   ]
+  },
+  {
+   "slot": "FS",
+   "ids": [
+    "4039059",
+    "4037559"
+   ]
+  },
+  {
+   "slot": "RCB",
+   "ids": [
+    "4382401",
+    "4429193"
+   ]
+  },
+  {
+   "slot": "NB",
+   "ids": [
+    "4567462",
+    "4430925"
+   ]
+  },
+  {
+   "slot": "PK",
+   "ids": [
+    "2985659"
+   ]
+  },
+  {
+   "slot": "P",
+   "ids": [
+    "4589212"
+   ]
+  },
+  {
+   "slot": "H",
+   "ids": [
+    "4589212"
+   ]
+  },
+  {
+   "slot": "PR",
+   "ids": [
+    "4686472",
+    "4429193",
+    "4382401"
+   ]
+  },
+  {
+   "slot": "KR",
+   "ids": [
+    "4686472",
+    "4702555",
+    "4362748",
+    "4568490"
+   ]
+  },
+  {
+   "slot": "LS",
+   "ids": [
+    "3139166"
+   ]
+  },
+  {
+   "slot": "WR",
+   "ids": [
+    "4372016",
+    "4600981"
+   ]
+  },
+  {
+   "slot": "WR",
+   "ids": [
+    "3128429",
+    "4431280"
+   ]
+  },
+  {
+   "slot": "WR",
+   "ids": [
+    "4686472",
+    "4039057"
+   ]
+  },
+  {
+   "slot": "LT",
+   "ids": [
+    "4035662",
+    "3921936",
+    "4361691"
+   ]
+  },
+  {
+   "slot": "LG",
+   "ids": [
+    "4037650",
+    "4868598",
+    "4368033"
+   ]
+  },
+  {
+   "slot": "C",
+   "ids": [
+    "4039018",
+    "4242503",
+    "3121541"
+   ]
+  },
+  {
+   "slot": "RG",
+   "ids": [
+    "4608138",
+    "4868598"
+   ]
+  },
+  {
+   "slot": "RT",
+   "ids": [
+    "3052885",
+    "4240551"
+   ]
+  },
+  {
+   "slot": "QB",
+   "ids": [
+    "4426338",
+    "3892775",
+    "4241820"
+   ]
+  },
+  {
+   "slot": "TE",
+   "ids": [
+    "3051876",
+    "3911853",
+    "4383440",
+    "5159802",
+    "4432208"
+   ]
+  },
+  {
+   "slot": "RB",
+   "ids": [
+    "4241985",
+    "4568490",
+    "4702555",
+    "4362748"
+   ]
+  },
+  {
+   "slot": "FB",
+   "ids": [
+    "3929914"
+   ]
+  }
+ ],
+ "coaches": [
+  {
+   "id": "coach-sean-payton",
+   "name": "Sean Payton",
+   "title": "HC",
+   "side": "HC"
+  },
+  {
+   "id": "coach-davis-webb",
+   "name": "Davis Webb",
+   "title": "OC",
+   "side": "OFF"
+  },
+  {
+   "id": "coach-john-morton",
+   "name": "John Morton",
+   "title": "OPGC",
+   "side": "OFF"
+  },
+  {
+   "id": "coach-logan-kilgore",
+   "name": "Logan Kilgore",
+   "title": "QB",
+   "side": "OFF"
+  },
+  {
+   "id": "coach-lou-ayeni",
+   "name": "Lou Ayeni",
+   "title": "RB",
+   "side": "OFF"
+  },
+  {
+   "id": "coach-ronald-curry",
+   "name": "Ronald Curry",
+   "title": "WR",
+   "side": "OFF"
+  },
+  {
+   "id": "coach-austin-king",
+   "name": "Austin King",
+   "title": "TE",
+   "side": "OFF"
+  },
+  {
+   "id": "coach-zach-strief",
+   "name": "Zach Strief",
+   "title": "ORGC",
+   "side": "OFF"
+  },
+  {
+   "id": "coach-chris-morgan",
+   "name": "Chris Morgan",
+   "title": "OL",
+   "side": "OFF"
+  },
+  {
+   "id": "coach-vance-joseph",
+   "name": "Vance Joseph",
+   "title": "DC",
+   "side": "DEF"
+  },
+  {
+   "id": "coach-jamar-cain",
+   "name": "Jamar Cain",
+   "title": "DL",
+   "side": "DEF"
+  },
+  {
+   "id": "coach-jeff-schmedding",
+   "name": "Jeff Schmedding",
+   "title": "ILB",
+   "side": "DEF"
+  },
+  {
+   "id": "coach-isaac-shewmaker",
+   "name": "Isaac Shewmaker",
+   "title": "OLB",
+   "side": "DEF"
+  },
+  {
+   "id": "coach-robert-livingston",
+   "name": "Robert Livingston",
+   "title": "DPGC",
+   "side": "DEF"
+  },
+  {
+   "id": "coach-doug-belk",
+   "name": "Doug Belk",
+   "title": "DB",
+   "side": "DEF"
+  },
+  {
+   "id": "coach-darren-rizzi",
+   "name": "Darren Rizzi",
+   "title": "STC",
+   "side": "ST"
+  }
+ ],
+ "people": {
+  "3915282": {
+   "id": "3915282",
+   "kind": "player",
+   "name": "Zach Allen",
+   "jersey": "99",
+   "status": "",
+   "salary": 17250000,
+   "draft": {
+    "year": 2019,
+    "round": 3,
+    "pick": 65,
+    "team": "ARI"
+   },
+   "wiki": "Zach Allen",
+   "stints": [
+    {
+     "team": "ARI",
+     "league": "NFL",
+     "start": 2019,
+     "end": 2022
+    },
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2023,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "year": 2019,
+    "round": 3,
+    "pick": 65
+   }
+  },
+  "4261090": {
+   "id": "4261090",
+   "kind": "player",
+   "name": "Jordan Jackson",
+   "jersey": "94",
+   "status": "off",
+   "salary": null,
+   "draft": {
+    "year": 2022,
+    "round": 6,
+    "pick": 194,
+    "team": "NO"
+   },
+   "wiki": "Jordan Jackson (American football)",
+   "stints": [
+    {
+     "team": "NO",
+     "league": "NFL",
+     "start": 2022,
+     "end": 2022
+    },
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2023,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "year": 2022,
+    "round": 6,
+    "pick": 194
+   }
+  },
+  "4683535": {
+   "id": "4683535",
+   "kind": "player",
+   "name": "Tyler Onyedim",
+   "jersey": "98",
+   "status": "off",
+   "salary": null,
+   "draft": {
+    "year": 2026,
+    "round": 3,
+    "pick": 66,
+    "team": "DEN"
+   },
+   "wiki": "Tyler Onyedim",
+   "stints": [
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2026,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "year": 2026,
+    "round": 3,
+    "pick": 66
+   }
+  },
+  "4242358": {
+   "id": "4242358",
+   "kind": "player",
+   "name": "Matt Henningsen",
+   "jersey": "91",
+   "status": "IR",
+   "salary": 590000,
+   "draft": {
+    "year": 2022,
+    "round": 6,
+    "pick": 206,
+    "team": "DEN"
+   },
+   "wiki": "Matt Henningsen",
+   "stints": [
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2022,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "year": 2022,
+    "round": 6,
+    "pick": 206
+   }
+  },
+  "3894915": {
+   "id": "3894915",
+   "kind": "player",
+   "name": "D.J. Jones",
+   "jersey": "93",
+   "status": "",
+   "salary": 13000000,
+   "draft": {
+    "year": 2017,
+    "round": 6,
+    "pick": 198,
+    "team": "SF"
+   },
+   "wiki": "D. J. Jones (defensive lineman)",
+   "stints": [
+    {
+     "team": "SF",
+     "league": "NFL",
+     "start": 2017,
+     "end": 2021
+    },
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2022,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "year": 2017,
+    "round": 6,
+    "pick": 198
+   }
+  },
+  "4603189": {
+   "id": "4603189",
+   "kind": "player",
+   "name": "Sai'vion Jones",
+   "jersey": "95",
+   "status": "",
+   "salary": null,
+   "draft": {
+    "year": 2025,
+    "round": 3,
+    "pick": 101,
+    "team": "DEN"
+   },
+   "wiki": "Sai'vion Jones",
+   "stints": [
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2025,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "year": 2025,
+    "round": 3,
+    "pick": 101
+   }
+  },
+  "4066109": {
+   "id": "4066109",
+   "kind": "player",
+   "name": "Eyioma Uwazurike",
+   "jersey": "96",
+   "status": "",
+   "salary": 1145000,
+   "draft": {
+    "year": 2022,
+    "round": 4,
+    "pick": 116,
+    "team": "DEN"
+   },
+   "wiki": "Eyioma Uwazurike",
+   "stints": [
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2022,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "year": 2022,
+    "round": 4,
+    "pick": 116
+   }
+  },
+  "4039064": {
+   "id": "4039064",
+   "kind": "player",
+   "name": "Malcolm Roach",
+   "jersey": "97",
+   "status": "",
+   "salary": 6856667,
+   "draft": {},
+   "wiki": "Malcolm Roach",
+   "stints": [
+    {
+     "team": "NO",
+     "league": "NFL",
+     "start": 2020,
+     "end": 2023
+    },
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2024,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "undrafted_year": 2020
+   }
+  },
+  "4687592": {
+   "id": "4687592",
+   "kind": "player",
+   "name": "Jonah Elliss",
+   "jersey": "52",
+   "status": "",
+   "salary": 1328702,
+   "draft": {
+    "year": 2024,
+    "round": 3,
+    "pick": 76,
+    "team": "DEN"
+   },
+   "wiki": "Jonah Elliss",
+   "stints": [
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2024,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "year": 2024,
+    "round": 3,
+    "pick": 76
+   }
+  },
+  "5216101": {
+   "id": "5216101",
+   "kind": "player",
+   "name": "Dondrea Tillman",
+   "jersey": "92",
+   "status": "",
+   "salary": 1075000,
+   "draft": {},
+   "wiki": "Dondrea Tillman",
+   "stints": [
+    {
+     "team": "Birmingham Stallions",
+     "league": "UFL",
+     "start": 2022,
+     "end": 2024
+    },
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2024,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "undrafted_year": 2022
+   }
+  },
+  "4040608": {
+   "id": "4040608",
+   "kind": "player",
+   "name": "Jonathon Cooper",
+   "jersey": "0",
+   "status": "O",
+   "salary": 12000000,
+   "draft": {
+    "year": 2021,
+    "round": 7,
+    "pick": 239,
+    "team": "DEN"
+   },
+   "wiki": "Jonathon Cooper",
+   "stints": [
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2021,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "year": 2021,
+    "round": 7,
+    "pick": 239
+   }
+  },
+  "2612151": {
+   "id": "2612151",
+   "kind": "player",
+   "name": "Alex Singleton",
+   "jersey": "49",
+   "status": "",
+   "salary": 7500000,
+   "draft": {},
+   "wiki": "Alex Singleton (linebacker)",
+   "stints": [
+    {
+     "team": "SEA",
+     "league": "NFL",
+     "start": 2015,
+     "end": 2015
+    },
+    {
+     "team": "NE",
+     "league": "NFL",
+     "start": 2015,
+     "end": 2015
+    },
+    {
+     "team": "MIN",
+     "league": "NFL",
+     "start": 2015,
+     "end": 2016
+    },
+    {
+     "team": "Calgary Stampeders",
+     "league": "CFL",
+     "start": 2016,
+     "end": 2018
+    },
+    {
+     "team": "PHI",
+     "league": "NFL",
+     "start": 2019,
+     "end": 2021
+    },
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2022,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "undrafted_year": 2015
+   }
+  },
+  "4693373": {
+   "id": "4693373",
+   "kind": "player",
+   "name": "Jordan Turner",
+   "jersey": "55",
+   "status": "",
+   "salary": null,
+   "draft": {},
+   "wiki": "Jordan Turner (American football)",
+   "stints": [
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2025,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "undrafted_year": 2025
+   }
+  },
+  "3919548": {
+   "id": "3919548",
+   "kind": "player",
+   "name": "Justin Strnad",
+   "jersey": "40",
+   "status": "",
+   "salary": 6750000,
+   "draft": {
+    "year": 2020,
+    "round": 5,
+    "pick": 178,
+    "team": "DEN"
+   },
+   "wiki": "Justin Strnad",
+   "stints": [
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2020,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "year": 2020,
+    "round": 5,
+    "pick": 178
+   }
+  },
+  "4875336": {
+   "id": "4875336",
+   "kind": "player",
+   "name": "Karene Reid",
+   "jersey": "47",
+   "status": "",
+   "salary": 1005000,
+   "draft": {},
+   "wiki": "Karene Reid",
+   "stints": [
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2025,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "undrafted_year": 2025
+   }
+  },
+  "4428241": {
+   "id": "4428241",
+   "kind": "player",
+   "name": "Levelle Bailey",
+   "jersey": "56",
+   "status": "IR",
+   "salary": 565000,
+   "draft": {},
+   "wiki": "Levelle Bailey",
+   "stints": [
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2024,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "undrafted_year": 2024
+   }
+  },
+  "4360259": {
+   "id": "4360259",
+   "kind": "player",
+   "name": "Nik Bonitto",
+   "jersey": "15",
+   "status": "",
+   "salary": 15246000,
+   "draft": {
+    "year": 2022,
+    "round": 2,
+    "pick": 64,
+    "team": "DEN"
+   },
+   "wiki": "Nik Bonitto",
+   "stints": [
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2022,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "year": 2022,
+    "round": 2,
+    "pick": 64
+   }
+  },
+  "4692048": {
+   "id": "4692048",
+   "kind": "player",
+   "name": "Que Robinson",
+   "jersey": "51",
+   "status": "",
+   "salary": null,
+   "draft": {
+    "year": 2025,
+    "round": 4,
+    "pick": 134,
+    "team": "DEN"
+   },
+   "wiki": "Que Robinson",
+   "stints": [
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2025,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "year": 2025,
+    "round": 4,
+    "pick": 134
+   }
+  },
+  "4372012": {
+   "id": "4372012",
+   "kind": "player",
+   "name": "Pat Surtain II",
+   "jersey": "2",
+   "status": "",
+   "salary": 22632000,
+   "draft": {
+    "year": 2021,
+    "round": 1,
+    "pick": 9,
+    "team": "DEN"
+   },
+   "wiki": "Pat Surtain II",
+   "stints": [
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2021,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "year": 2021,
+    "round": 1,
+    "pick": 9
+   }
+  },
+  "4430925": {
+   "id": "4430925",
+   "kind": "player",
+   "name": "Jahdae Barron",
+   "jersey": "23",
+   "status": "",
+   "salary": 1661508,
+   "draft": {
+    "year": 2025,
+    "round": 1,
+    "pick": 20,
+    "team": "DEN"
+   },
+   "wiki": "Jahdae Barron",
+   "stints": [
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2025,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "year": 2025,
+    "round": 1,
+    "pick": 20
+   }
+  },
+  "4360853": {
+   "id": "4360853",
+   "kind": "player",
+   "name": "Talanoa Hufanga",
+   "jersey": "9",
+   "status": "",
+   "salary": 12000000,
+   "draft": {
+    "year": 2021,
+    "round": 5,
+    "pick": 180,
+    "team": "SF"
+   },
+   "wiki": "Talanoa Hufanga",
+   "stints": [
+    {
+     "team": "SF",
+     "league": "NFL",
+     "start": 2021,
+     "end": 2024
+    },
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2025,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "year": 2021,
+    "round": 5,
+    "pick": 180
+   }
+  },
+  "4428503": {
+   "id": "4428503",
+   "kind": "player",
+   "name": "JL Skinner",
+   "jersey": "34",
+   "status": "",
+   "salary": 1145000,
+   "draft": {
+    "year": 2023,
+    "round": 6,
+    "pick": 183,
+    "team": "DEN"
+   },
+   "wiki": "JL Skinner",
+   "stints": [
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2023,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "year": 2023,
+    "round": 6,
+    "pick": 183
+   }
+  },
+  "4257240": {
+   "id": "4257240",
+   "kind": "player",
+   "name": "Tycen Anderson",
+   "jersey": "6",
+   "status": "",
+   "salary": 1500000,
+   "draft": {
+    "year": 2022,
+    "round": 5,
+    "pick": 166,
+    "team": "CIN"
+   },
+   "wiki": "Tycen Anderson",
+   "stints": [
+    {
+     "team": "CIN",
+     "league": "NFL",
+     "start": 2022,
+     "end": 2025
+    },
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2026,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "year": 2022,
+    "round": 5,
+    "pick": 166
+   }
+  },
+  "4039059": {
+   "id": "4039059",
+   "kind": "player",
+   "name": "Brandon Jones",
+   "jersey": "22",
+   "status": "",
+   "salary": 7500000,
+   "draft": {
+    "year": 2020,
+    "round": 3,
+    "pick": 70,
+    "team": "MIA"
+   },
+   "wiki": "Brandon Jones (safety)",
+   "stints": [
+    {
+     "team": "MIA",
+     "league": "NFL",
+     "start": 2020,
+     "end": 2023
+    },
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2024,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "year": 2020,
+    "round": 3,
+    "pick": 70
+   }
+  },
+  "4037559": {
+   "id": "4037559",
+   "kind": "player",
+   "name": "Devon Key",
+   "jersey": "26",
+   "status": "",
+   "salary": 1075000,
+   "draft": {},
+   "wiki": "Devon Key",
+   "stints": [
+    {
+     "team": "KC",
+     "league": "NFL",
+     "start": 2021,
+     "end": 2021
+    },
+    {
+     "team": "ATL",
+     "league": "NFL",
+     "start": 2022,
+     "end": 2022
+    },
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2022,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "undrafted_year": 2021
+   }
+  },
+  "4382401": {
+   "id": "4382401",
+   "kind": "player",
+   "name": "Riley Moss",
+   "jersey": "21",
+   "status": "",
+   "salary": 3674000,
+   "draft": {
+    "year": 2023,
+    "round": 3,
+    "pick": 83,
+    "team": "DEN"
+   },
+   "wiki": "Riley Moss",
+   "stints": [
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2023,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "year": 2023,
+    "round": 3,
+    "pick": 83
+   }
+  },
+  "4429193": {
+   "id": "4429193",
+   "kind": "player",
+   "name": "Kris Abrams-Draine",
+   "jersey": "31",
+   "status": "",
+   "salary": null,
+   "draft": {
+    "year": 2024,
+    "round": 5,
+    "pick": 145,
+    "team": "DEN"
+   },
+   "wiki": "Kris Abrams-Draine",
+   "stints": [
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2024,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "year": 2024,
+    "round": 5,
+    "pick": 145
+   }
+  },
+  "4567462": {
+   "id": "4567462",
+   "kind": "player",
+   "name": "Ja'Quan McMillian",
+   "jersey": "29",
+   "status": "",
+   "salary": 5767000,
+   "draft": {},
+   "wiki": "Ja'Quan McMillian",
+   "stints": [
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2022,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "undrafted_year": 2022
+   }
+  },
+  "2985659": {
+   "id": "2985659",
+   "kind": "player",
+   "name": "Wil Lutz",
+   "jersey": "3",
+   "status": "",
+   "salary": 2093333,
+   "draft": {},
+   "wiki": "Wil Lutz",
+   "stints": [
+    {
+     "team": "BAL",
+     "league": "NFL",
+     "start": 2016,
+     "end": 2016
+    },
+    {
+     "team": "NO",
+     "league": "NFL",
+     "start": 2016,
+     "end": 2022
+    },
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2023,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "undrafted_year": 2016
+   }
+  },
+  "4589212": {
+   "id": "4589212",
+   "kind": "player",
+   "name": "Jeremy Crawshaw",
+   "jersey": "16",
+   "status": "",
+   "salary": null,
+   "draft": {
+    "year": 2025,
+    "round": 6,
+    "pick": 216,
+    "team": "DEN"
+   },
+   "wiki": "Jeremy Crawshaw",
+   "stints": [
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2025,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "year": 2025,
+    "round": 6,
+    "pick": 216
+   }
+  },
+  "4686472": {
+   "id": "4686472",
+   "kind": "player",
+   "name": "Marvin Mims Jr.",
+   "jersey": "19",
+   "status": "O",
+   "salary": 5767000,
+   "draft": {
+    "year": 2023,
+    "round": 2,
+    "pick": 63,
+    "team": "DEN"
+   },
+   "wiki": "Marvin Mims Jr.",
+   "stints": [
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2023,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "year": 2023,
+    "round": 2,
+    "pick": 63
+   }
+  },
+  "4702555": {
+   "id": "4702555",
+   "kind": "player",
+   "name": "Jonah Coleman",
+   "jersey": "20",
+   "status": "",
+   "salary": null,
+   "draft": {
+    "year": 2026,
+    "round": 4,
+    "pick": 108,
+    "team": "DEN"
+   },
+   "wiki": "Jonah Coleman",
+   "stints": [
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2026,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "year": 2026,
+    "round": 4,
+    "pick": 108
+   }
+  },
+  "4362748": {
+   "id": "4362748",
+   "kind": "player",
+   "name": "Tyler Badie",
+   "jersey": "28",
+   "status": "",
+   "salary": 1075000,
+   "draft": {
+    "year": 2022,
+    "round": 6,
+    "pick": 196,
+    "team": "BAL"
+   },
+   "wiki": "Tyler Badie",
+   "stints": [
+    {
+     "team": "BAL",
+     "league": "NFL",
+     "start": 2022,
+     "end": 2022
+    },
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2022,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "year": 2022,
+    "round": 6,
+    "pick": 196
+   }
+  },
+  "4568490": {
+   "id": "4568490",
+   "kind": "player",
+   "name": "RJ Harvey",
+   "jersey": "12",
+   "status": "O",
+   "salary": 1174531,
+   "draft": {
+    "year": 2025,
+    "round": 2,
+    "pick": 60,
+    "team": "DEN"
+   },
+   "wiki": "RJ Harvey",
+   "stints": [
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2025,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "year": 2025,
+    "round": 2,
+    "pick": 60
+   }
+  },
+  "3139166": {
+   "id": "3139166",
+   "kind": "player",
+   "name": "Mitchell Fraboni",
+   "jersey": "48",
+   "status": "",
+   "salary": 1215000,
+   "draft": {},
+   "wiki": "Mitchell Fraboni",
+   "stints": [
+    {
+     "team": "HOU",
+     "league": "NFL",
+     "start": 2021,
+     "end": 2021
+    },
+    {
+     "team": "Pittsburgh Maulers",
+     "league": "USFL",
+     "start": 2022,
+     "end": 2022
+    },
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2022,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "undrafted_year": 2018
+   }
+  },
+  "4372016": {
+   "id": "4372016",
+   "kind": "player",
+   "name": "Jaylen Waddle",
+   "jersey": "17",
+   "status": "",
+   "salary": 17241000,
+   "draft": {
+    "year": 2021,
+    "round": 1,
+    "pick": 6,
+    "team": "MIA"
+   },
+   "wiki": "Jaylen Waddle",
+   "stints": [
+    {
+     "team": "MIA",
+     "league": "NFL",
+     "start": 2021,
+     "end": 2025
+    },
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2026,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "year": 2021,
+    "round": 1,
+    "pick": 6
+   }
+  },
+  "4600981": {
+   "id": "4600981",
+   "kind": "player",
+   "name": "Pat Bryant",
+   "jersey": "13",
+   "status": "",
+   "salary": null,
+   "draft": {
+    "year": 2025,
+    "round": 3,
+    "pick": 74,
+    "team": "DEN"
+   },
+   "wiki": "Pat Bryant",
+   "stints": [
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2025,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "year": 2025,
+    "round": 3,
+    "pick": 74
+   }
+  },
+  "3128429": {
+   "id": "3128429",
+   "kind": "player",
+   "name": "Courtland Sutton",
+   "jersey": "14",
+   "status": "",
+   "salary": 17500000,
+   "draft": {
+    "year": 2018,
+    "round": 2,
+    "pick": 40,
+    "team": "DEN"
+   },
+   "wiki": "Courtland Sutton",
+   "stints": [
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2018,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "year": 2018,
+    "round": 2,
+    "pick": 40
+   }
+  },
+  "4431280": {
+   "id": "4431280",
+   "kind": "player",
+   "name": "Troy Franklin",
+   "jersey": "11",
+   "status": "",
+   "salary": null,
+   "draft": {
+    "year": 2024,
+    "round": 4,
+    "pick": 102,
+    "team": "DEN"
+   },
+   "wiki": "Troy Franklin",
+   "stints": [
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2024,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "year": 2024,
+    "round": 4,
+    "pick": 102
+   }
+  },
+  "4039057": {
+   "id": "4039057",
+   "kind": "player",
+   "name": "Lil'Jordan Humphrey",
+   "jersey": "5",
+   "status": "",
+   "salary": 1321895,
+   "draft": {},
+   "wiki": "Lil'Jordan Humphrey",
+   "stints": [
+    {
+     "team": "NO",
+     "league": "NFL",
+     "start": 2019,
+     "end": 2021
+    },
+    {
+     "team": "NE",
+     "league": "NFL",
+     "start": 2022,
+     "end": 2022
+    },
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2023,
+     "end": 2024
+    },
+    {
+     "team": "NYG",
+     "league": "NFL",
+     "start": 2025,
+     "end": 2025
+    },
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2025,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "undrafted_year": 2019
+   }
+  },
+  "4035662": {
+   "id": "4035662",
+   "kind": "player",
+   "name": "Garett Bolles",
+   "jersey": "72",
+   "status": "",
+   "salary": 20000000,
+   "draft": {
+    "year": 2017,
+    "round": 1,
+    "pick": 20,
+    "team": "DEN"
+   },
+   "wiki": "Garett Bolles",
+   "stints": [
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2017,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "year": 2017,
+    "round": 1,
+    "pick": 20
+   }
+  },
+  "3921936": {
+   "id": "3921936",
+   "kind": "player",
+   "name": "Matt Peart",
+   "jersey": "79",
+   "status": "",
+   "salary": 2000000,
+   "draft": {
+    "year": 2020,
+    "round": 3,
+    "pick": 99,
+    "team": "NYG"
+   },
+   "wiki": "Matt Peart",
+   "stints": [
+    {
+     "team": "NYG",
+     "league": "NFL",
+     "start": 2020,
+     "end": 2023
+    },
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2024,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "year": 2020,
+    "round": 3,
+    "pick": 99
+   }
+  },
+  "4361691": {
+   "id": "4361691",
+   "kind": "player",
+   "name": "Frank Crum",
+   "jersey": "73",
+   "status": "IR",
+   "salary": 565000,
+   "draft": {},
+   "wiki": "Frank Crum",
+   "stints": [
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2024,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "undrafted_year": 2024
+   }
+  },
+  "4037650": {
+   "id": "4037650",
+   "kind": "player",
+   "name": "Ben Powers",
+   "jersey": "74",
+   "status": "",
+   "salary": 6000000,
+   "draft": {
+    "year": 2019,
+    "round": 4,
+    "pick": 123,
+    "team": "BAL"
+   },
+   "wiki": "Ben Powers (American football)",
+   "stints": [
+    {
+     "team": "BAL",
+     "league": "NFL",
+     "start": 2019,
+     "end": 2022
+    },
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2023,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "year": 2019,
+    "round": 4,
+    "pick": 123
+   }
+  },
+  "4868598": {
+   "id": "4868598",
+   "kind": "player",
+   "name": "Kage Casey",
+   "jersey": "78",
+   "status": "off",
+   "salary": null,
+   "draft": {
+    "year": 2026,
+    "round": 4,
+    "pick": 111,
+    "team": "DEN"
+   },
+   "wiki": "Kage Casey",
+   "stints": [
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2026,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "year": 2026,
+    "round": 4,
+    "pick": 111
+   }
+  },
+  "4368033": {
+   "id": "4368033",
+   "kind": "player",
+   "name": "Nick Gargiulo",
+   "jersey": "66",
+   "status": "O",
+   "salary": 540000,
+   "draft": {
+    "year": 2024,
+    "round": 7,
+    "pick": 256,
+    "team": "DEN"
+   },
+   "wiki": "Nick Gargiulo",
+   "stints": [
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2024,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "year": 2024,
+    "round": 7,
+    "pick": 256
+   }
+  },
+  "4039018": {
+   "id": "4039018",
+   "kind": "player",
+   "name": "Luke Wattenberg",
+   "jersey": "60",
+   "status": "",
+   "salary": 11000000,
+   "draft": {
+    "year": 2022,
+    "round": 5,
+    "pick": 171,
+    "team": "DEN"
+   },
+   "wiki": "Luke Wattenberg",
+   "stints": [
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2022,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "year": 2022,
+    "round": 5,
+    "pick": 171
+   }
+  },
+  "4242503": {
+   "id": "4242503",
+   "kind": "player",
+   "name": "Alex Forsyth",
+   "jersey": "54",
+   "status": "",
+   "salary": 1145000,
+   "draft": {
+    "year": 2023,
+    "round": 7,
+    "pick": 257,
+    "team": "DEN"
+   },
+   "wiki": "Alex Forsyth (American football)",
+   "stints": [
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2023,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "year": 2023,
+    "round": 7,
+    "pick": 257
+   }
+  },
+  "3121541": {
+   "id": "3121541",
+   "kind": "player",
+   "name": "Michael Deiter",
+   "jersey": "67",
+   "status": "IR",
+   "salary": 580000,
+   "draft": {
+    "year": 2019,
+    "round": 3,
+    "pick": 78,
+    "team": "MIA"
+   },
+   "wiki": "Michael Deiter",
+   "stints": [
+    {
+     "team": "MIA",
+     "league": "NFL",
+     "start": 2019,
+     "end": 2022
+    },
+    {
+     "team": "HOU",
+     "league": "NFL",
+     "start": 2023,
+     "end": 2023
+    },
+    {
+     "team": "WSH",
+     "league": "NFL",
+     "start": 2024,
+     "end": 2025
+    },
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2025,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "year": 2019,
+    "round": 3,
+    "pick": 78
+   }
+  },
+  "4608138": {
+   "id": "4608138",
+   "kind": "player",
+   "name": "Quinn Meinerz",
+   "jersey": "77",
+   "status": "",
+   "salary": 15366000,
+   "draft": {
+    "year": 2021,
+    "round": 3,
+    "pick": 98,
+    "team": "DEN"
+   },
+   "wiki": "Quinn Meinerz",
+   "stints": [
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2021,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "year": 2021,
+    "round": 3,
+    "pick": 98
+   }
+  },
+  "3052885": {
+   "id": "3052885",
+   "kind": "player",
+   "name": "Mike McGlinchey",
+   "jersey": "69",
+   "status": "",
+   "salary": 18500000,
+   "draft": {
+    "year": 2018,
+    "round": 1,
+    "pick": 9,
+    "team": "SF"
+   },
+   "wiki": "Mike McGlinchey (offensive lineman)",
+   "stints": [
+    {
+     "team": "SF",
+     "league": "NFL",
+     "start": 2018,
+     "end": 2022
+    },
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2023,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "year": 2018,
+    "round": 1,
+    "pick": 9
+   }
+  },
+  "4240551": {
+   "id": "4240551",
+   "kind": "player",
+   "name": "Alex Palczewski",
+   "jersey": "63",
+   "status": "",
+   "salary": 4500000,
+   "draft": {},
+   "wiki": "Alex Palczewski",
+   "stints": [
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2023,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "undrafted_year": 2023
+   }
+  },
+  "4426338": {
+   "id": "4426338",
+   "kind": "player",
+   "name": "Bo Nix",
+   "jersey": "10",
+   "status": "",
+   "salary": 2487106,
+   "draft": {
+    "year": 2024,
+    "round": 1,
+    "pick": 12,
+    "team": "DEN"
+   },
+   "wiki": "Bo Nix",
+   "stints": [
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2024,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "year": 2024,
+    "round": 1,
+    "pick": 12
+   }
+  },
+  "3892775": {
+   "id": "3892775",
+   "kind": "player",
+   "name": "Jarrett Stidham",
+   "jersey": "8",
+   "status": "",
+   "salary": 6500000,
+   "draft": {
+    "year": 2019,
+    "round": 4,
+    "pick": 133,
+    "team": "NE"
+   },
+   "wiki": "Jarrett Stidham",
+   "stints": [
+    {
+     "team": "NE",
+     "league": "NFL",
+     "start": 2019,
+     "end": 2021
+    },
+    {
+     "team": "LV",
+     "league": "NFL",
+     "start": 2022,
+     "end": 2022
+    },
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2023,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "year": 2019,
+    "round": 4,
+    "pick": 133
+   }
+  },
+  "4241820": {
+   "id": "4241820",
+   "kind": "player",
+   "name": "Sam Ehlinger",
+   "jersey": "4",
+   "status": "off",
+   "salary": null,
+   "draft": {
+    "year": 2021,
+    "round": 6,
+    "pick": 218,
+    "team": "IND"
+   },
+   "wiki": "Sam Ehlinger",
+   "stints": [
+    {
+     "team": "IND",
+     "league": "NFL",
+     "start": 2021,
+     "end": 2024
+    },
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2025,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "year": 2021,
+    "round": 6,
+    "pick": 218
+   }
+  },
+  "3051876": {
+   "id": "3051876",
+   "kind": "player",
+   "name": "Evan Engram",
+   "jersey": "1",
+   "status": "",
+   "salary": 11500000,
+   "draft": {
+    "year": 2017,
+    "round": 1,
+    "pick": 23,
+    "team": "NYG"
+   },
+   "wiki": "Evan Engram",
+   "stints": [
+    {
+     "team": "NYG",
+     "league": "NFL",
+     "start": 2017,
+     "end": 2021
+    },
+    {
+     "team": "JAX",
+     "league": "NFL",
+     "start": 2022,
+     "end": 2024
+    },
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2025,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "year": 2017,
+    "round": 1,
+    "pick": 23
+   }
+  },
+  "3911853": {
+   "id": "3911853",
+   "kind": "player",
+   "name": "Adam Trautman",
+   "jersey": "82",
+   "status": "",
+   "salary": 6000000,
+   "draft": {
+    "year": 2020,
+    "round": 3,
+    "pick": 105,
+    "team": "NO"
+   },
+   "wiki": "Adam Trautman",
+   "stints": [
+    {
+     "team": "NO",
+     "league": "NFL",
+     "start": 2020,
+     "end": 2022
+    },
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2023,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "year": 2020,
+    "round": 3,
+    "pick": 105
+   }
+  },
+  "4383440": {
+   "id": "4383440",
+   "kind": "player",
+   "name": "Nate Adkins",
+   "jersey": "45",
+   "status": "",
+   "salary": 1635000,
+   "draft": {},
+   "wiki": "Nate Adkins",
+   "stints": [
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2023,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "undrafted_year": 2023
+   }
+  },
+  "5159802": {
+   "id": "5159802",
+   "kind": "player",
+   "name": "Dallen Bentley",
+   "jersey": "89",
+   "status": "off",
+   "salary": null,
+   "draft": {
+    "year": 2026,
+    "round": 7,
+    "pick": 256,
+    "team": "DEN"
+   },
+   "wiki": "Dallen Bentley",
+   "stints": [
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2026,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "year": 2026,
+    "round": 7,
+    "pick": 256
+   }
+  },
+  "4432208": {
+   "id": "4432208",
+   "kind": "player",
+   "name": "Caleb Lohner",
+   "jersey": "84",
+   "status": "IR",
+   "salary": 515000,
+   "draft": {
+    "year": 2025,
+    "round": 7,
+    "pick": 241,
+    "team": "DEN"
+   },
+   "wiki": "Caleb Lohner",
+   "stints": [
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2025,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "year": 2025,
+    "round": 7,
+    "pick": 241
+   }
+  },
+  "4241985": {
+   "id": "4241985",
+   "kind": "player",
+   "name": "J.K. Dobbins",
+   "jersey": "27",
+   "status": "",
+   "salary": 8000000,
+   "draft": {
+    "year": 2020,
+    "round": 2,
+    "pick": 55,
+    "team": "BAL"
+   },
+   "wiki": "J.K. Dobbins",
+   "stints": [
+    {
+     "team": "BAL",
+     "league": "NFL",
+     "start": 2020,
+     "end": 2023
+    },
+    {
+     "team": "LAC",
+     "league": "NFL",
+     "start": 2024,
+     "end": 2024
+    },
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2025,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "year": 2020,
+    "round": 2,
+    "pick": 55
+   }
+  },
+  "3929914": {
+   "id": "3929914",
+   "kind": "player",
+   "name": "Adam Prentice",
+   "jersey": "46",
+   "status": "",
+   "salary": 1402500,
+   "draft": {},
+   "wiki": "Adam Prentice",
+   "stints": [
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2021,
+     "end": 2021
+    },
+    {
+     "team": "NO",
+     "league": "NFL",
+     "start": 2021,
+     "end": 2024
+    },
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2025,
+     "end": null
+    }
+   ],
+   "wiki_draft": {
+    "undrafted_year": 2021
+   }
+  },
+  "coach-sean-payton": {
+   "id": "coach-sean-payton",
+   "kind": "coach",
+   "name": "Sean Payton",
+   "title": "HC",
+   "side": "HC",
+   "wiki": "Sean Payton",
+   "stints": [
+    {
+     "team": "San Diego State",
+     "league": "",
+     "start": 1988,
+     "end": 1989
+    },
+    {
+     "team": "Indiana State",
+     "league": "",
+     "start": 1990,
+     "end": 1991
+    },
+    {
+     "team": "San Diego State",
+     "league": "",
+     "start": 1992,
+     "end": 1993
+    },
+    {
+     "team": "Miami (OH)",
+     "league": "",
+     "start": 1994,
+     "end": 1995
+    },
+    {
+     "team": "Illinois",
+     "league": "",
+     "start": 1996,
+     "end": 1996
+    },
+    {
+     "team": "PHI",
+     "league": "NFL",
+     "start": 1997,
+     "end": 1998
+    },
+    {
+     "team": "NYG",
+     "league": "NFL",
+     "start": 1999,
+     "end": 2002
+    },
+    {
+     "team": "DAL",
+     "league": "NFL",
+     "start": 2003,
+     "end": 2005
+    },
+    {
+     "team": "NO",
+     "league": "NFL",
+     "start": 2006,
+     "end": 2011
+    },
+    {
+     "team": "Liberty Christian (TX)",
+     "league": "",
+     "start": 2012,
+     "end": 2012
+    },
+    {
+     "team": "NO",
+     "league": "NFL",
+     "start": 2013,
+     "end": 2021
+    },
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2023,
+     "end": null
+    }
+   ],
+   "wiki_draft": {}
+  },
+  "coach-davis-webb": {
+   "id": "coach-davis-webb",
+   "kind": "coach",
+   "name": "Davis Webb",
+   "title": "OC",
+   "side": "OFF",
+   "wiki": "Davis Webb",
+   "stints": [
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2023,
+     "end": null
+    }
+   ],
+   "wiki_draft": {}
+  },
+  "coach-john-morton": {
+   "id": "coach-john-morton",
+   "kind": "coach",
+   "name": "John Morton",
+   "title": "OPGC",
+   "side": "OFF",
+   "wiki": "John Morton (American football)",
+   "stints": [
+    {
+     "team": "OAK",
+     "league": "NFL",
+     "start": 1998,
+     "end": 2004
+    },
+    {
+     "team": "San Diego",
+     "league": "",
+     "start": 2005,
+     "end": 2005
+    },
+    {
+     "team": "NO",
+     "league": "NFL",
+     "start": 2006,
+     "end": 2006
+    },
+    {
+     "team": "USC",
+     "league": "",
+     "start": 2007,
+     "end": 2010
+    },
+    {
+     "team": "SF",
+     "league": "NFL",
+     "start": 2011,
+     "end": 2014
+    },
+    {
+     "team": "NO",
+     "league": "NFL",
+     "start": 2015,
+     "end": 2016
+    },
+    {
+     "team": "NYJ",
+     "league": "NFL",
+     "start": 2017,
+     "end": 2017
+    },
+    {
+     "team": "LV",
+     "league": "NFL",
+     "start": 2019,
+     "end": 2021
+    },
+    {
+     "team": "DET",
+     "league": "NFL",
+     "start": 2022,
+     "end": 2022
+    },
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2023,
+     "end": 2024
+    },
+    {
+     "team": "DET",
+     "league": "NFL",
+     "start": 2025,
+     "end": 2025
+    },
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2025,
+     "end": null
+    }
+   ],
+   "wiki_draft": {}
+  },
+  "coach-logan-kilgore": {
+   "id": "coach-logan-kilgore",
+   "kind": "coach",
+   "name": "Logan Kilgore",
+   "title": "QB",
+   "side": "OFF",
+   "wiki": "Logan Kilgore",
+   "stints": [
+    {
+     "team": "Bakersfield",
+     "league": "",
+     "start": 2018,
+     "end": 2018
+    },
+    {
+     "team": "Arkansas State",
+     "league": "",
+     "start": 2021,
+     "end": 2021
+    },
+    {
+     "team": "Isidore Newman HS (LA)",
+     "league": "",
+     "start": 2022,
+     "end": 2022
+    },
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2023,
+     "end": null
+    }
+   ],
+   "wiki_draft": {}
+  },
+  "coach-lou-ayeni": {
+   "id": "coach-lou-ayeni",
+   "kind": "coach",
+   "name": "Lou Ayeni",
+   "title": "RB",
+   "side": "OFF",
+   "wiki": "Lou Ayeni",
+   "stints": [
+    {
+     "team": "Northwestern",
+     "league": "",
+     "start": 2008,
+     "end": 2009
+    },
+    {
+     "team": "Toledo",
+     "league": "",
+     "start": 2010,
+     "end": 2013
+    },
+    {
+     "team": "Iowa State",
+     "league": "",
+     "start": 2014,
+     "end": 2017
+    },
+    {
+     "team": "Northwestern",
+     "league": "",
+     "start": 2018,
+     "end": 2022
+    },
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2023,
+     "end": null
+    }
+   ],
+   "wiki_draft": {}
+  },
+  "coach-ronald-curry": {
+   "id": "coach-ronald-curry",
+   "kind": "coach",
+   "name": "Ronald Curry",
+   "title": "WR",
+   "side": "OFF",
+   "wiki": "Ronald Curry",
+   "stints": [
+    {
+     "team": "Mooresville Christian Academy (NC)",
+     "league": "",
+     "start": 2010,
+     "end": 2012
+    },
+    {
+     "team": "SF",
+     "league": "NFL",
+     "start": 2014,
+     "end": 2015
+    },
+    {
+     "team": "NO",
+     "league": "NFL",
+     "start": 2016,
+     "end": 2023
+    },
+    {
+     "team": "BUF",
+     "league": "NFL",
+     "start": 2024,
+     "end": 2025
+    },
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2026,
+     "end": null
+    }
+   ],
+   "wiki_draft": {}
+  },
+  "coach-austin-king": {
+   "id": "coach-austin-king",
+   "kind": "coach",
+   "name": "Austin King",
+   "title": "TE",
+   "side": "OFF",
+   "wiki": "Austin King",
+   "stints": [
+    {
+     "team": "Toledo",
+     "league": "",
+     "start": 2012,
+     "end": 2013
+    },
+    {
+     "team": "Syracuse",
+     "league": "",
+     "start": 2014,
+     "end": 2014
+    },
+    {
+     "team": "Dayton",
+     "league": "",
+     "start": 2015,
+     "end": 2019
+    },
+    {
+     "team": "LV",
+     "league": "NFL",
+     "start": 2020,
+     "end": 2021
+    },
+    {
+     "team": "CHI",
+     "league": "NFL",
+     "start": 2022,
+     "end": 2022
+    },
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2023,
+     "end": null
+    }
+   ],
+   "wiki_draft": {}
+  },
+  "coach-zach-strief": {
+   "id": "coach-zach-strief",
+   "kind": "coach",
+   "name": "Zach Strief",
+   "title": "ORGC",
+   "side": "OFF",
+   "wiki": "Zach Strief",
+   "stints": [
+    {
+     "team": "NO",
+     "league": "NFL",
+     "start": 2021,
+     "end": 2022
+    },
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2023,
+     "end": null
+    }
+   ],
+   "wiki_draft": {}
+  },
+  "coach-chris-morgan": {
+   "id": "coach-chris-morgan",
+   "kind": "coach",
+   "name": "Chris Morgan",
+   "title": "OL",
+   "side": "OFF",
+   "wiki": "Chris Morgan (American football)",
+   "stints": [
+    {
+     "team": "Copperas Cove HS (TX)",
+     "league": "",
+     "start": 2000,
+     "end": 2001
+    },
+    {
+     "team": "Idaho",
+     "league": "",
+     "start": 2002,
+     "end": 2003
+    },
+    {
+     "team": "Westfield HS (TX)",
+     "league": "",
+     "start": 2004,
+     "end": 2008
+    },
+    {
+     "team": "OAK",
+     "league": "NFL",
+     "start": 2009,
+     "end": 2010
+    },
+    {
+     "team": "WSH",
+     "league": "NFL",
+     "start": 2011,
+     "end": 2013
+    },
+    {
+     "team": "SEA",
+     "league": "NFL",
+     "start": 2014,
+     "end": 2014
+    },
+    {
+     "team": "ATL",
+     "league": "NFL",
+     "start": 2015,
+     "end": 2020
+    },
+    {
+     "team": "PIT",
+     "league": "NFL",
+     "start": 2021,
+     "end": 2021
+    },
+    {
+     "team": "CHI",
+     "league": "NFL",
+     "start": 2022,
+     "end": 2024
+    },
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2025,
+     "end": null
+    }
+   ],
+   "wiki_draft": {}
+  },
+  "coach-vance-joseph": {
+   "id": "coach-vance-joseph",
+   "kind": "coach",
+   "name": "Vance Joseph",
+   "title": "DC",
+   "side": "DEF",
+   "wiki": "Vance Joseph",
+   "stints": [
+    {
+     "team": "Colorado",
+     "league": "",
+     "start": 1999,
+     "end": 2003
+    },
+    {
+     "team": "Bowling Green",
+     "league": "",
+     "start": 2004,
+     "end": 2004
+    },
+    {
+     "team": "SF",
+     "league": "NFL",
+     "start": 2005,
+     "end": 2010
+    },
+    {
+     "team": "HOU",
+     "league": "NFL",
+     "start": 2011,
+     "end": 2013
+    },
+    {
+     "team": "CIN",
+     "league": "NFL",
+     "start": 2014,
+     "end": 2015
+    },
+    {
+     "team": "MIA",
+     "league": "NFL",
+     "start": 2016,
+     "end": 2016
+    },
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2017,
+     "end": 2018
+    },
+    {
+     "team": "ARI",
+     "league": "NFL",
+     "start": 2019,
+     "end": 2022
+    },
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2023,
+     "end": null
+    }
+   ],
+   "wiki_draft": {}
+  },
+  "coach-jamar-cain": {
+   "id": "coach-jamar-cain",
+   "kind": "coach",
+   "name": "Jamar Cain",
+   "title": "DL",
+   "side": "DEF",
+   "wiki": "Jamar Cain",
+   "stints": [
+    {
+     "team": "Sacramento City",
+     "league": "",
+     "start": 2004,
+     "end": 2004
+    },
+    {
+     "team": "Ohio",
+     "league": "",
+     "start": 2005,
+     "end": 2005
+    },
+    {
+     "team": "Missouri State",
+     "league": "",
+     "start": 2006,
+     "end": 2008
+    },
+    {
+     "team": "Cal Poly",
+     "league": "",
+     "start": 2009,
+     "end": 2012
+    },
+    {
+     "team": "Wyoming",
+     "league": "",
+     "start": 2013,
+     "end": 2013
+    },
+    {
+     "team": "North Dakota State",
+     "league": "",
+     "start": 2014,
+     "end": 2016
+    },
+    {
+     "team": "Fresno State",
+     "league": "",
+     "start": 2017,
+     "end": 2018
+    },
+    {
+     "team": "Arizona State",
+     "league": "",
+     "start": 2019,
+     "end": 2019
+    },
+    {
+     "team": "Oklahoma",
+     "league": "",
+     "start": 2020,
+     "end": 2021
+    },
+    {
+     "team": "LSU",
+     "league": "",
+     "start": 2022,
+     "end": 2022
+    },
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2023,
+     "end": null
+    }
+   ],
+   "wiki_draft": {}
+  },
+  "coach-jeff-schmedding": {
+   "id": "coach-jeff-schmedding",
+   "kind": "coach",
+   "name": "Jeff Schmedding",
+   "title": "ILB",
+   "side": "DEF",
+   "wiki": "Jeff Schmedding",
+   "stints": [
+    {
+     "team": "Eastern Washington",
+     "league": "",
+     "start": 2004,
+     "end": 2018
+    },
+    {
+     "team": "Boise State",
+     "league": "",
+     "start": 2019,
+     "end": 2020
+    },
+    {
+     "team": "Auburn",
+     "league": "",
+     "start": 2021,
+     "end": 2022
+    },
+    {
+     "team": "Washington State",
+     "league": "",
+     "start": 2023,
+     "end": 2024
+    },
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2025,
+     "end": null
+    }
+   ],
+   "wiki_draft": {}
+  },
+  "coach-isaac-shewmaker": {
+   "id": "coach-isaac-shewmaker",
+   "kind": "coach",
+   "name": "Isaac Shewmaker",
+   "title": "OLB",
+   "side": "DEF",
+   "wiki": null,
+   "stints": [],
+   "wiki_draft": {}
+  },
+  "coach-robert-livingston": {
+   "id": "coach-robert-livingston",
+   "kind": "coach",
+   "name": "Robert Livingston",
+   "title": "DPGC",
+   "side": "DEF",
+   "wiki": "Robert Livingston (American football)",
+   "stints": [
+    {
+     "team": "Furman",
+     "league": "",
+     "start": 2010,
+     "end": 2010
+    },
+    {
+     "team": "Vanderbilt",
+     "league": "",
+     "start": 2011,
+     "end": 2011
+    },
+    {
+     "team": "CIN",
+     "league": "NFL",
+     "start": 2015,
+     "end": 2023
+    },
+    {
+     "team": "Colorado",
+     "league": "",
+     "start": 2024,
+     "end": 2025
+    },
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2026,
+     "end": null
+    }
+   ],
+   "wiki_draft": {}
+  },
+  "coach-doug-belk": {
+   "id": "coach-doug-belk",
+   "kind": "coach",
+   "name": "Doug Belk",
+   "title": "DB",
+   "side": "DEF",
+   "wiki": "Doug Belk",
+   "stints": [
+    {
+     "team": "Valdosta State",
+     "league": "",
+     "start": 2011,
+     "end": 2013
+    },
+    {
+     "team": "Alabama",
+     "league": "",
+     "start": 2014,
+     "end": 2016
+    },
+    {
+     "team": "West Virginia",
+     "league": "",
+     "start": 2017,
+     "end": 2018
+    },
+    {
+     "team": "Houston",
+     "league": "",
+     "start": 2019,
+     "end": 2023
+    },
+    {
+     "team": "USC",
+     "league": "",
+     "start": 2024,
+     "end": 2025
+    },
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2026,
+     "end": null
+    }
+   ],
+   "wiki_draft": {}
+  },
+  "coach-darren-rizzi": {
+   "id": "coach-darren-rizzi",
+   "kind": "coach",
+   "name": "Darren Rizzi",
+   "title": "STC",
+   "side": "ST",
+   "wiki": "Darren Rizzi",
+   "stints": [
+    {
+     "team": "Colgate",
+     "league": "",
+     "start": 1993,
+     "end": 1993
+    },
+    {
+     "team": "New Haven",
+     "league": "",
+     "start": 1994,
+     "end": 1997
+    },
+    {
+     "team": "Northeastern",
+     "league": "",
+     "start": 1998,
+     "end": 1998
+    },
+    {
+     "team": "New Haven",
+     "league": "",
+     "start": 1999,
+     "end": 2001
+    },
+    {
+     "team": "Rutgers",
+     "league": "",
+     "start": 2002,
+     "end": 2007
+    },
+    {
+     "team": "Rhode Island",
+     "league": "",
+     "start": 2008,
+     "end": 2008
+    },
+    {
+     "team": "MIA",
+     "league": "NFL",
+     "start": 2009,
+     "end": 2018
+    },
+    {
+     "team": "NO",
+     "league": "NFL",
+     "start": 2019,
+     "end": 2024
+    },
+    {
+     "team": "DEN",
+     "league": "NFL",
+     "start": 2025,
+     "end": null
+    }
+   ],
+   "wiki_draft": {}
+  }
+ }
+}

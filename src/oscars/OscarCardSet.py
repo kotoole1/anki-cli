@@ -2,6 +2,7 @@ import csv
 import os
 
 from cards.cardSet import CardSet
+from cards.ordering import batched_variant_order
 from oscars.OscarCard import OscarCard
 
 
@@ -33,16 +34,8 @@ def _build_new_card_order(rows: list[dict]) -> list[str]:
         block_idx = (max_year - year) // 5
         block_map.setdefault(block_idx, []).append(year)
 
-    order = []
-    for block_idx in sorted(block_map):
-        block_years = sorted(block_map[block_idx], reverse=True)
-        for year in block_years:
-            order.append(f"{year}-desc")
-        for year in block_years:
-            order.append(f"{year}-actors")
-        for year in block_years:
-            order.append(f"{year}-year")
-    return order
+    batches = [sorted(block_map[b], reverse=True) for b in sorted(block_map)]
+    return batched_variant_order(batches, ["desc", "actors", "year"])
 
 
 class OscarCardSet(CardSet):

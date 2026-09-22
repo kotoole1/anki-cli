@@ -93,7 +93,30 @@ class AcScheduler:
         self._state = store.load(cardset.id)
         # Persist total so the menu can show deck-wide stats from the JSON alone.
         self._state["total_cards"] = len(cardset.cards)
+        self._forget_changed_answers()
         self._first_unseen_id: str | None = self._compute_first_unseen()
+
+    def _forget_changed_answers(self) -> None:
+        """Reset cards whose answer changed since they were last reviewed.
+
+        Sets built on live data (broncos) give each card an `answer_key`; it is
+        stored with the card's FSRS state. When the two disagree the memory is
+        of a fact that is no longer true, so the card goes back to unseen and
+        re-enters the new-card queue. The old entry, review log included, is
+        kept under state["archived"] rather than deleted. Cards without an
+        `answer_key` (every static set) are untouched."""
+        changed = False
+        for card in self._cardset.cards:
+            key = getattr(card, "answer_key", None)
+            stored = self._state["cards"].get(card.id)
+            if key is None or stored is None:
+                continue
+            if stored.get("answer_key") not in (None, key):
+                self._state.setdefault("archived", {}).setdefault(card.id, []).append(stored)
+                del self._state["cards"][card.id]
+                changed = True
+        if changed:
+            self._store.save(self._cardset.id, self._state)
 
     def _compute_first_unseen(self) -> str | None:
         for cid in getattr(self._cardset, 'new_card_order', []):
@@ -151,6 +174,8 @@ class AcScheduler:
         fsrs_card = FsrsCard.from_dict(fsrs_dict) if fsrs_dict else FsrsCard()
         fsrs_card, _ = self._fsrs.review_card(fsrs_card, rating)
         updated = fsrs_card.to_dict()
+        if getattr(card, "answer_key", None) is not None:
+            updated["answer_key"] = card.answer_key
         updated["reviews"] = (stored or {}).get("reviews", []) + [{
             "ts": datetime.now(_UTC).isoformat(),
             "rating": rating.value,
